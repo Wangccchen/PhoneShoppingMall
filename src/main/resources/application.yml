@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/shoppingdb
+    username: root  # 数据库用户名
+    password: wc0308101303  # 数据库密码
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

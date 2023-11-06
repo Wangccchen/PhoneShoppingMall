@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangchen.mapper.ProductMapper">
+
+    <!-- ... 其他映射语句 ... -->
+
+    <select id="getProductsByPage" resultType="com.wangchen.pojo.Product">
+        SELECT * FROM Products LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="getTotalProductsCount" resultType="int">
+        SELECT COUNT(*) FROM Products
+    </select>
+</mapper>
