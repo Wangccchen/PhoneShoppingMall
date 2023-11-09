@@ -11,5 +11,5 @@ public interface ProductService {
     List<Product> getAllProducts();
     void updateProduct(Product product);
     List<Product> searchProductsByName(String keyword);
-    PageBean getProductsByPage(int pageNum, int pageSize);
+    PageBean getProductsByPage(int currentPage, int pageSize);
 }

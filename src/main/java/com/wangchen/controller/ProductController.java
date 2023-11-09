@@ -19,9 +19,9 @@ public class ProductController {
     //商品页默认展示分页后的商品
     @GetMapping
     public Result getAllProducts(
-            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "1") int currentPage,
             @RequestParam(defaultValue = "10") int pageSize) {
-        PageBean pageBean = productService.getProductsByPage(pageNum, pageSize);
+        PageBean pageBean = productService.getProductsByPage(currentPage, pageSize);
         return Result.success(pageBean);
     }
 

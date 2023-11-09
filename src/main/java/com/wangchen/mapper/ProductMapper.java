@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
     //增加产品
-    @Insert("INSERT INTO Products (ProductName, Description, Price, StockQuantity) VALUES (#{productName}, #{description}, #{price}, #{stockQuantity})")
+    @Insert("INSERT INTO Products (ProductName, Description, Price, StockQuantity, SalesVolume, ImageURL) VALUES (#{productName}, #{description}, #{price}, #{stockQuantity}, 0, COALESCE(#{imageURL}, 'https://example.com/default-image.jpg'))")
     void addProduct(Product product);
 
     //删除产品

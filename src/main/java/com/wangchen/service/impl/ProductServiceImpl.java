@@ -47,13 +47,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageBean getProductsByPage(int pageNum, int pageSize) {
-        List<Product> products = productMapper.getProductsByPage((pageNum - 1) * pageSize, pageSize);
+    public PageBean getProductsByPage(int currentPage, int pageSize) {
+        List<Product> products = productMapper.getProductsByPage((currentPage - 1) * pageSize, pageSize);
         int totalItems = productMapper.getTotalProductsCount();  // 获取总商品数量
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);  // 计算总页数
 
         PageBean pageBean = new PageBean();
-        pageBean.setPageNum(pageNum);
+        pageBean.setPageNum(currentPage);
         pageBean.setPageSize(pageSize);
         pageBean.setTotalItems(totalItems);
         pageBean.setTotalPages(totalPages);
