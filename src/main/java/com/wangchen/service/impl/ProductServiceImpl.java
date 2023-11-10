@@ -27,11 +27,22 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(int productID) {
         productMapper.deleteProduct(productID);
     }
+    //批量删除
+    @Override
+    public void deleteProductsByIds(List<Integer> productIds) {
+        productMapper.deleteProductsByIds(productIds);
+    }
 
     //显示全部商品
     @Override
     public List<Product> getAllProducts() {
         return productMapper.getAllProducts();
+    }
+
+    //根据ID获得商品
+    @Override
+    public Product getProductByID(int productID) {
+        return productMapper.getProductById(productID);
     }
 
     //修改商品信息

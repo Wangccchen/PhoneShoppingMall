@@ -18,11 +18,18 @@ public class ProductController {
 
     //商品页默认展示分页后的商品
     @GetMapping
-    public Result getAllProducts(
+    public Result getProductsByPage(
             @RequestParam(defaultValue = "1") int currentPage,
             @RequestParam(defaultValue = "10") int pageSize) {
         PageBean pageBean = productService.getProductsByPage(currentPage, pageSize);
         return Result.success(pageBean);
+    }
+
+    @GetMapping("/{productID}")
+    public Result getProductByID(@PathVariable("productID") int productID){
+        System.out.println(productID);
+        Product product = productService.getProductByID(productID);
+        return Result.success(product);
     }
 
     //商品页获取所有商品的信息
@@ -39,9 +46,20 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{productID}")
-    public Result deleteProduct(@PathVariable int productID) {
+    public Result deleteProduct(@PathVariable("productID") int productID) {
         productService.deleteProduct(productID);
         return Result.success("Product deleted successfully");
+    }
+
+    @PostMapping("/deleteBatch")
+    public Result deleteProductsBatch(@RequestBody List<Integer> productIds) {
+        try {
+            productService.deleteProductsByIds(productIds);
+            return Result.success("批量删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("批量删除失败：" + e.getMessage());
+        }
     }
 
     @GetMapping("/search")
@@ -50,5 +68,10 @@ public class ProductController {
         return Result.success(products);
     }
 
-
+    //编辑商品请求
+    @PutMapping
+    public Result updateProducts(@RequestBody Product product){
+        productService.updateProduct(product);
+        return Result.success();
+    }
 }

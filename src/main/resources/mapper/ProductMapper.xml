@@ -2,6 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wangchen.mapper.ProductMapper">
 
+    <!-- 增加产品 -->
+    <insert id="addProduct" parameterType="com.wangchen.pojo.Product">
+        <!-- COALESCE 函数用于处理 ImageURL 为空的情况，使用默认图片链接 -->
+        INSERT INTO Products (ProductName, Description, Price, StockQuantity, SalesVolume, ImageURL)
+        VALUES (#{productName}, #{description}, #{price}, #{stockQuantity}, 0, COALESCE(#{imageURL}, 'https://example.com/default-image.jpg'))
+    </insert>
+
+    <!-- 删除产品 -->
+    <delete id="deleteProduct" parameterType="int">
+        DELETE FROM Products WHERE ProductID = #{productID}
+    </delete>
+
+    <!-- 搜索产品（实现模糊搜索） -->
+    <select id="searchProductsByName" resultType="com.wangchen.pojo.Product">
+        SELECT * FROM Products WHERE ProductName LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <!-- 根据id获取产品 -->
+    <select id="getProductById" resultType="com.wangchen.pojo.Product">
+        SELECT * FROM Products WHERE ProductID = #{productID}
+    </select>
+
+    <!-- 显示全部商品 -->
+    <select id="getAllProducts" resultType="com.wangchen.pojo.Product">
+        SELECT * FROM Products
+    </select>
+
+    <!-- 更新产品参数 -->
+    <update id="updateProduct" parameterType="com.wangchen.pojo.Product">
+        UPDATE Products SET ProductName = #{productName}, Description = #{description}, Price = #{price}, StockQuantity = #{stockQuantity}
+        WHERE ProductID = #{productID}
+    </update>
+
     <!-- ... 其他映射语句 ... -->
 
     <select id="getProductsByPage" resultType="com.wangchen.pojo.Product">
@@ -11,4 +44,12 @@
     <select id="getTotalProductsCount" resultType="int">
         SELECT COUNT(*) FROM Products
     </select>
+
+    <!-- 批量删除产品 -->
+    <delete id="deleteProductsByIds" parameterType="java.util.List">
+        DELETE FROM Products WHERE ProductID IN
+        <foreach item="productId" collection="list" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </delete>
 </mapper>

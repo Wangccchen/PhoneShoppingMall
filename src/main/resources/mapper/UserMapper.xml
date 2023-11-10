@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangchen.mapper.UserMapper">
+
+    <!-- 添加用户 -->
+    <insert id="addUser" parameterType="com.wangchen.pojo.User">
+        INSERT INTO Users (Username, Password, Email, Address, PhoneNumber)
+        VALUES (#{username}, #{password}, #{email}, #{address}, #{phoneNumber})
+    </insert>
+
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM Users WHERE UserID = #{userID}
+    </delete>
+
+    <!-- 批量删除用户 -->
+    <delete id="deleteUsersByIds" parameterType="java.util.List">
+        DELETE FROM Users WHERE UserID IN
+        <foreach item="userId" collection="list" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <!-- 更新用户信息 -->
+    <update id="updateUser" parameterType="com.wangchen.pojo.User">
+        UPDATE Users SET Username = #{username}, Password = #{password}, Email = #{email}, Address = #{address}, PhoneNumber = #{phoneNumber},Flag = #{flag}
+        WHERE UserID = #{userID}
+    </update>
+
+    <!-- 根据ID获取用户 -->
+    <select id="getUserById" resultType="com.wangchen.pojo.User">
+        SELECT * FROM Users WHERE UserID = #{userID}
+    </select>
+
+    <!-- 获取所有用户 -->
+    <select id="getAllUsers" resultType="com.wangchen.pojo.User">
+        SELECT * FROM Users
+    </select>
+
+    <!-- 分页查询用户 -->
+    <select id="getUsersByPage" resultType="com.wangchen.pojo.User">
+        SELECT * FROM Users LIMIT #{start}, #{pageSize}
+    </select>
+
+    <!-- 获取用户总数 -->
+    <select id="getTotalUsersCount" resultType="int">
+        SELECT COUNT(*) FROM Users
+    </select>
+
+    <!-- 根据关键字搜索用户（模糊搜索） -->
+    <select id="searchUsersByUsername" resultType="com.wangchen.pojo.User">
+        SELECT * FROM Users WHERE Username LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <!-- 根据用户名获取用户 -->
+    <select id="getUserByUsername" resultType="com.wangchen.pojo.User">
+        SELECT * FROM Users WHERE Username = #{username}
+    </select>
+</mapper>
