@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
     // 获取所有用户信息
-    @GetMapping
+    @GetMapping({"/users","/backsystem/users"})
     public Result getUsersByPage(
             @RequestParam(defaultValue = "1") int currentPage,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -25,49 +24,49 @@ public class UserController {
     }
 
     // 获取所有用户信息
-    @GetMapping("/allUser")
+    @GetMapping({"/users/allUser","/backsystem/users/allUser"})
     public Result getAllUsers() {
         List<User> users = userService.getAllUsers();
         return Result.success(users);
     }
 
     // 根据用户ID获取用户详情
-    @GetMapping("/{userID}")
+    @GetMapping({"/users/{userID}","/backsystem/users/{userID}"})
     public Result getUserByID(@PathVariable("userID") int userID) {
         User user = userService.getUserByID(userID);
         return Result.success(user);
     }
 
     // 根据关键字搜索用户（模糊搜索）
-    @GetMapping("/search")
+    @GetMapping({"/users/search","/backsystem/users/search"})
     public Result searchUsers(@RequestParam String keyword) {
         List<User> users = userService.searchUsersByUsername(keyword);
         return Result.success(users);
     }
 
     // 根据用户名获取用户
-    @GetMapping("/getByUsername")
+    @GetMapping({"/users/getByUsername","/backsystem/users/getByUsername"})
     public Result getUserByUsername(@RequestParam String username) {
         User user = userService.getUserByUsername(username);
         return Result.success(user);
     }
 
     // 添加用户
-    @PostMapping
+    @PostMapping({"/users","/backsystem/users"})
     public Result addUser(@RequestBody User user) {
         userService.addUser(user);
         return Result.success("User added successfully");
     }
 
     // 删除用户
-    @DeleteMapping("/delete/{userID}")
+    @DeleteMapping({"/users/delete/{userID}","/backsystem/users/delete/{userID}"})
     public Result deleteUser(@PathVariable("userID") int userID) {
         userService.deleteUser(userID);
         return Result.success("User deleted successfully");
     }
 
     // 批量删除用户
-    @PostMapping("/deleteBatch")
+    @PostMapping({"/users/deleteBatch","/backsystem/users/deleteBatch"})
     public Result deleteUsersBatch(@RequestBody List<Integer> userIds) {
         try {
             userService.deleteUsersByIds(userIds);
@@ -79,7 +78,7 @@ public class UserController {
     }
 
     // 更新用户信息
-    @PutMapping
+    @PutMapping({"/users","/backsystem/users"})
     public Result updateUser(@RequestBody User user) {
         userService.updateUser(user);
         return Result.success("User updated successfully");

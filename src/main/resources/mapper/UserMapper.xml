@@ -56,4 +56,9 @@
     <select id="getUserByUsername" resultType="com.wangchen.pojo.User">
         SELECT * FROM Users WHERE Username = #{username}
     </select>
+
+    <!--    后台验证登录-->
+    <select id="getUserByUsernameAndPassword" resultType="com.wangchen.pojo.User">
+        SELECT * FROM Users WHERE Username = #{username} AND Password = #{password}
+    </select>
 </mapper>

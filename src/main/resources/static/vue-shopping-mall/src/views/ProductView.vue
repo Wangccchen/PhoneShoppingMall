@@ -138,7 +138,14 @@
 
 <script>
 import axios from "axios";
-//import { page, add, update, deleteById, selectById } from "@/api/prod";
+import {
+  page,
+  add,
+  update,
+  deleteById,
+  selectById,
+  deleteByIds,
+} from "@/api/prod";
 export default {
   data() {
     return {
@@ -174,14 +181,7 @@ export default {
   },
   mounted() {
     this.page(); //当页面加载完成后，发送异步请求，获取数据
-    axios
-      .get("http://localhost:8080/products", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        console.log(resp.data.data);
-        this.tableData = resp.data.data.products;
-      });
+    console.log("page执行完毕！");
   },
   methods: {
     //更新被选中的列表
@@ -194,17 +194,16 @@ export default {
     },
     // 查询分页数据
     page() {
-      axios
-        .get(
-          "http://localhost:8080/products?currentPage=" +
-            this.currentPage +
-            "&pageSize=" +
-            this.pageSize
-        )
-        .then((res) => {
+      console.log("执行了page刷新函数！");
+      page(this.currentPage, this.pageSize).then((res) => {
+        console.log(res.data);
+        if (res.data.code === 0 && res.data.msg === "NOT_LOGIN") {
+          console.log("未登录！已跳转至登录界面");
+        } else {
           this.totalCount = res.data.data.totalItems;
           this.tableData = res.data.data.products;
-        });
+        }
+      });
     },
     //分页
     handleSizeChange(val) {
@@ -223,50 +222,46 @@ export default {
     add() {
       if (this.singleProd.productID) {
         //修改
-        axios
-          .put("http://localhost:8080/products", this.singleProd)
-          .then((resp) => {
-            console.log(this.singleProd);
-            if (resp.data.code == 1) {
-              this.dialogFormVisible = false;
-              this.page();
-              this.$message({ message: "恭喜你，保存成功", type: "success" });
-              this.singleProd = {
-                description: "",
-                imageURL: "",
-                price: "",
-                productID: "",
-                productName: "",
-                salesVolume: 0,
-                stockQuantity: 0,
-              };
-            } else {
-              this.$message.error(resp.data.msg);
-            }
-          });
+        update(this.singleProd).then((resp) => {
+          console.log(this.singleProd);
+          if (resp.data.code == 1) {
+            this.dialogFormVisible = false;
+            this.page();
+            this.$message({ message: "恭喜你，保存成功", type: "success" });
+            this.singleProd = {
+              description: "",
+              imageURL: "",
+              price: "",
+              productID: "",
+              productName: "",
+              salesVolume: 0,
+              stockQuantity: 0,
+            };
+          } else {
+            this.$message.error(resp.data.msg);
+          }
+        });
       } else {
         //添加
-        axios
-          .post("http://localhost:8080/products", this.singleProd)
-          .then((resp) => {
-            console.log(this.singleProd);
-            if (resp.data.code == 1) {
-              this.dialogFormVisible = false;
-              this.page();
-              this.$message({ message: "恭喜你，保存成功", type: "success" });
-              this.singleProd = {
-                description: "",
-                imageURL: "",
-                price: "",
-                productID: "",
-                productName: "",
-                salesVolume: 0,
-                stockQuantity: 0,
-              };
-            } else {
-              this.$message.error(resp.data.msg);
-            }
-          });
+        add(this.singleProd).then((resp) => {
+          console.log(this.singleProd);
+          if (resp.data.code == 1) {
+            this.dialogFormVisible = false;
+            this.page();
+            this.$message({ message: "恭喜你，保存成功", type: "success" });
+            this.singleProd = {
+              description: "",
+              imageURL: "",
+              price: "",
+              productID: "",
+              productName: "",
+              salesVolume: 0,
+              stockQuantity: 0,
+            };
+          } else {
+            this.$message.error(resp.data.msg);
+          }
+        });
       }
     },
 
@@ -278,17 +273,15 @@ export default {
         type: "warning",
       })
         .then(() => {
-          axios
-            .delete("http://localhost:8080/products/delete/" + id)
-            .then((resp) => {
-              if (resp.data.code == 1) {
-                //删除成功
-                this.$message.success("恭喜你，删除成功");
-                this.page();
-              } else {
-                this.$message.error(resp.data.msg);
-              }
-            });
+          deleteById(id).then((resp) => {
+            if (resp.data.code == 1) {
+              //删除成功
+              this.$message.success("恭喜你，删除成功");
+              this.page();
+            } else {
+              this.$message.error(resp.data.msg);
+            }
+          });
         })
         .catch(() => {
           //用户点击取消按钮
@@ -309,20 +302,15 @@ export default {
             this.selectedIds[i] = this.multipleSelection[i].productID;
           }
 
-          axios
-            .post(
-              "http://localhost:8080/products/deleteBatch",
-              this.selectedIds
-            )
-            .then((resp) => {
-              if (resp.data.code == 1) {
-                //删除成功
-                this.$message.success("恭喜你，删除成功");
-                this.page();
-              } else {
-                this.$message.error(resp.data.msg);
-              }
-            });
+          deleteByIds(this.selectedIds).then((resp) => {
+            if (resp.data.code == 1) {
+              //删除成功
+              this.$message.success("恭喜你，删除成功");
+              this.page();
+            } else {
+              this.$message.error(resp.data.msg);
+            }
+          });
         })
         .catch(() => {
           //用户点击取消按钮
@@ -335,7 +323,7 @@ export default {
       this.dialogFormVisible = true;
       console.log(id);
       //发送修改请求
-      axios.get("http://localhost:8080/products/" + id).then((res) => {
+      selectById(id).then((res) => {
         if (res.data.code == 1) {
           //console.log(res.data.data);
           this.singleProd = res.data.data;

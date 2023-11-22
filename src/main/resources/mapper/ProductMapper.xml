@@ -31,7 +31,7 @@
 
     <!-- 更新产品参数 -->
     <update id="updateProduct" parameterType="com.wangchen.pojo.Product">
-        UPDATE Products SET ProductName = #{productName}, Description = #{description}, Price = #{price}, StockQuantity = #{stockQuantity}
+        UPDATE Products SET ProductName = #{productName}, Description = #{description}, Price = #{price}, StockQuantity = #{stockQuantity}, SalesVolume = #{salesVolume}
         WHERE ProductID = #{productID}
     </update>
 

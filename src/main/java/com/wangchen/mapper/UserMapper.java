@@ -37,5 +37,8 @@ public interface UserMapper {
 
     // 获取用户总数
     int getTotalUsersCount();
+
+    //后台验证登录
+    User getUserByUsernameAndPassword(String username, String password);
 }
 

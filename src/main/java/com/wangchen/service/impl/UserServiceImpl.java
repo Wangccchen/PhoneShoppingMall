@@ -59,6 +59,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.getUserByUsername(username);
     }
 
+    //后台验证登录
+    @Override
+    public User login(String username, String password) {
+        return userMapper.getUserByUsernameAndPassword(username, password);
+    }
+
     @Override
     public PageBean getUsersByPage(int currentPage, int pageSize) {
         List<User> users = userMapper.getUsersByPage((currentPage - 1) * pageSize, pageSize);

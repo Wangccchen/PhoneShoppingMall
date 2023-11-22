@@ -146,7 +146,14 @@
 
 <script>
 import axios from "axios";
-//import { page, add, update, deleteById, selectById } from "@/api/prod";
+import {
+  page,
+  add,
+  update,
+  deleteById,
+  selectById,
+  deleteByIds,
+} from "@/api/user";
 export default {
   data() {
     return {
@@ -182,14 +189,6 @@ export default {
   },
   mounted() {
     this.page(); //当页面加载完成后，发送异步请求，获取数据
-    axios
-      .get("http://localhost:8080/users", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        console.log(resp.data.data);
-        this.tableData = resp.data.data.users;
-      });
   },
   methods: {
     //更新被选中的列表
@@ -202,17 +201,14 @@ export default {
     },
     // 查询分页数据
     page() {
-      axios
-        .get(
-          "http://localhost:8080/users?currentPage=" +
-            this.currentPage +
-            "&pageSize=" +
-            this.pageSize
-        )
-        .then((res) => {
+      page(this.currentPage, this.pageSize).then((res) => {
+        if (res.data.code === 0 && res.data.msg === "NOT_LOGIN") {
+          console.log("未登录！已跳转至登录界面");
+        } else {
           this.totalCount = res.data.data.totalItems;
           this.tableData = res.data.data.users;
-        });
+        }
+      });
     },
     //分页
     handleSizeChange(val) {
@@ -231,50 +227,46 @@ export default {
     add() {
       if (this.singleProd.userID) {
         //修改
-        axios
-          .put("http://localhost:8080/users", this.singleProd)
-          .then((resp) => {
-            console.log("要修改写入的内容：", this.singleProd);
-            if (resp.data.code == 1) {
-              this.dialogFormVisible = false;
-              this.page();
-              this.$message({ message: "恭喜你，保存成功", type: "success" });
-              this.singleProd = {
-                userID: 0,
-                username: "",
-                password: "",
-                email: "",
-                address: "",
-                phoneNumber: "",
-                flag: 0,
-              };
-            } else {
-              this.$message.error(resp.data.msg);
-            }
-          });
+        update(this.singleProd).then((resp) => {
+          console.log("要修改写入的内容：", this.singleProd);
+          if (resp.data.code == 1) {
+            this.dialogFormVisible = false;
+            this.page();
+            this.$message({ message: "恭喜你，保存成功", type: "success" });
+            this.singleProd = {
+              userID: 0,
+              username: "",
+              password: "",
+              email: "",
+              address: "",
+              phoneNumber: "",
+              flag: 0,
+            };
+          } else {
+            this.$message.error(resp.data.msg);
+          }
+        });
       } else {
         //添加
-        axios
-          .post("http://localhost:8080/users", this.singleProd)
-          .then((resp) => {
-            console.log(this.singleProd);
-            if (resp.data.code == 1) {
-              this.dialogFormVisible = false;
-              this.page();
-              this.$message({ message: "恭喜你，保存成功", type: "success" });
-              this.singleProd = {
-                userID: 0,
-                username: "",
-                password: "",
-                email: "",
-                address: "",
-                phoneNumber: "",
-                flag: 0,
-              };
-            } else {
-              this.$message.error(resp.data.msg);
-            }
-          });
+        add(this.singleProd).then((resp) => {
+          console.log(this.singleProd);
+          if (resp.data.code == 1) {
+            this.dialogFormVisible = false;
+            this.page();
+            this.$message({ message: "恭喜你，保存成功", type: "success" });
+            this.singleProd = {
+              userID: 0,
+              username: "",
+              password: "",
+              email: "",
+              address: "",
+              phoneNumber: "",
+              flag: 0,
+            };
+          } else {
+            this.$message.error(resp.data.msg);
+          }
+        });
       }
     },
 
@@ -286,17 +278,15 @@ export default {
         type: "warning",
       })
         .then(() => {
-          axios
-            .delete("http://localhost:8080/users/delete/" + id)
-            .then((resp) => {
-              if (resp.data.code == 1) {
-                //删除成功
-                this.$message.success("恭喜你，删除成功");
-                this.page();
-              } else {
-                this.$message.error(resp.data.msg);
-              }
-            });
+          deleteById(id).then((resp) => {
+            if (resp.data.code == 1) {
+              //删除成功
+              this.$message.success("恭喜你，删除成功");
+              this.page();
+            } else {
+              this.$message.error(resp.data.msg);
+            }
+          });
         })
         .catch(() => {
           //用户点击取消按钮
@@ -314,20 +304,18 @@ export default {
         .then(() => {
           //点击确认按钮
           for (let i = 0; i < this.multipleSelection.length; i++) {
-            this.selectedIds[i] = this.multipleSelection[i].productID;
+            this.selectedIds[i] = this.multipleSelection[i].userID;
           }
-
-          axios
-            .post("http://localhost:8080/users/deleteBatch", this.selectedIds)
-            .then((resp) => {
-              if (resp.data.code == 1) {
-                //删除成功
-                this.$message.success("恭喜你，删除成功");
-                this.page();
-              } else {
-                this.$message.error(resp.data.msg);
-              }
-            });
+          console.log("要删除的id为: " + this.selectedIds);
+          deleteByIds(this.selectedIds).then((resp) => {
+            if (resp.data.code == 1) {
+              //删除成功
+              this.$message.success("恭喜你，删除成功");
+              this.page();
+            } else {
+              this.$message.error(resp.data.msg);
+            }
+          });
         })
         .catch(() => {
           //用户点击取消按钮
@@ -340,7 +328,7 @@ export default {
       this.dialogFormVisible = true;
       console.log(id);
       //先获得要修改的东西
-      axios.get("http://localhost:8080/users/" + id).then((res) => {
+      selectById(id).then((res) => {
         if (res.data.code == 1) {
           //console.log(res.data.data);
           this.singleProd = res.data.data;
