@@ -7,7 +7,12 @@ export function page(currentPage,pageSize) {
   })
 }
 
-
+export function allProducts() {
+  return request({
+    url: '/products/allProducts',
+    method: 'get'
+  })
+}
 
 export function add(product) {
   return request({

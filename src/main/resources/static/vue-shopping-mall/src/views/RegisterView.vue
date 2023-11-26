@@ -1,9 +1,9 @@
 <template>
   <div class="login-box">
     <div class="title-container">
-      <h3 class="head-title">手机商城后台管理登陆系统</h3>
+      <h3 class="head-title">顶尖数码产品商城</h3>
     </div>
-    <h1 class="title">管理员注册</h1>
+    <h1 class="title">用户注册</h1>
     <div class="login">
       <el-form
         :model="ruleForm"
@@ -48,7 +48,7 @@
 import axios from "axios";
 import { add } from "../api/user";
 export default {
-  name: "backRegister",
+  name: "register",
   components: { axios },
   data() {
     return {
@@ -92,7 +92,7 @@ export default {
           add(this.ruleForm).then((res) => {
             if (res.data.code == 1) {
               alert("创建成功!即将跳转至登录页面...");
-              this.$router.push("/back/login");
+              this.$router.push("/login");
             } else {
               alert("未知原因创建失败！请联系管理员");
               this.loading = false;
@@ -110,8 +110,8 @@ export default {
     returnTo(formName) {
       this.$refs[formName].resetFields();
       this.$router.push({
-        path: "/back/login",
-        name: "backLogin",
+        path: "/login",
+        name: "login",
       });
     },
   },

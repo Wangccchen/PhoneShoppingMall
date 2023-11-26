@@ -6,7 +6,7 @@
 
 <script>
 // import ProductView from "./views/ProductView.vue";
-import HomePage from "./views/HomePage.vue";
+import HomePage from "./views/BackHomePage.vue";
 export default {
   components: { HomePage },
   data() {

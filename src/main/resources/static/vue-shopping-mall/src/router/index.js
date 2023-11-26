@@ -10,12 +10,24 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path:'/mall',
+    name:'mall',
+    redirect:'/products',
+    component:()=> import('../views/Mall.vue'),
+    children:[
+      {
+        path:'/products',
+        component:()=> import('../views/Products.vue')
+      }
+    ]
+  },
+  {
     path: '/backsystem',
-    component: () => import('../views/HomePage.vue'),
+    component: () => import('../views/BackHomePage.vue'),
     children: [
       {
         path: '/backsystem/products',
-        component: () => import('../views/ProductView.vue')
+        component: () => import('../views/BackProductView.vue')
       },
       {
         path: '/backsystem/users',
@@ -26,16 +38,21 @@ const routes = [
   {
     path: '/back/login',
     name: 'backLogin',
-    component: () => import('../views/LoginView.vue')
+    component: () => import('../views/BackLoginView.vue')
   },
   {
-    path: '/back/register',
-    name:'backRegister',
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginPage.vue')
+  },
+  {
+    path: '/register',
+    name:'register',
     component: () => import('../views/RegisterView.vue')
   },
   {
     path:'/',
-    redirect:'/backsystem/products'
+    redirect:'/mall'
   }
 ];
 
