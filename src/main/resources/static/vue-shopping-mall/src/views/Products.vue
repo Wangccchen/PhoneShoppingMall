@@ -31,11 +31,14 @@
               :offset="index % 5 === 0 ? 0 : 1"
             >
               <el-card class="card" :body-style="{ padding: '0px' }">
-                <!-- <img :src="product.imageURL" class="image" /> -->
                 <img
-                  src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                  :src="'imgs/productPics/' + product.imageURL"
                   class="image"
                 />
+                <!-- <img
+                  src="../assets/productPics/Apple iPhone 13.jpg"
+                  class="image"
+                /> -->
                 <div style="padding: 14px">
                   <span class="productName">{{ product.productName }}</span>
                   <div class="bottom clearfix">
@@ -182,7 +185,7 @@ export default {
   width: auto;
 }
 
-.el-input {
+.input {
   width: 35rem;
   margin-left: auto;
   margin-right: 25%;

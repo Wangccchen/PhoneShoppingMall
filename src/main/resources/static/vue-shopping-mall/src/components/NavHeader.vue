@@ -76,12 +76,11 @@ export default {
       .my-cart {
         width: 110px;
         text-align: center;
-        background-color: #67C23A;
+        background-color: #67c23a;
         color: #ffffff;
         margin-right: 0px;
 
         .icon-cart {
-          @include bgImg(16px, 12px, "/public/imgs/icon-cart-checked.png");
           margin-right: 4px;
         }
       }
@@ -107,13 +106,11 @@ export default {
 
           &:before {
             content: " "; //给图片留白,一定要留白占位置
-            @include bgImg(55px, 55px, "/public/imgs/mi-logo.png");
             transition: margin 0.2s;
           }
 
           &:after {
             content: " ";
-            @include bgImg(55px, 55px, "/public/imgs/mi-home.png");
           }
 
           //鼠标移上去的时候切换图片，前面的图片向左移动55px
@@ -234,7 +231,6 @@ export default {
         }
 
         a {
-          @include bgImg(18px, 18px, "/public/imgs/icon-search.png");
           margin-left: 17px;
         }
       }
