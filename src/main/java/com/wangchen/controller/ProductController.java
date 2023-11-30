@@ -24,7 +24,7 @@ public class ProductController {
         return Result.success(pageBean);
     }
 
-    @GetMapping({"/products/{productID}","/backsystem/products/{productID}"})
+    @GetMapping({"/mall/products/{productID}","/backsystem/products/{productID}"})
     public Result getProductByID(@PathVariable("productID") int productID){
         System.out.println(productID);
         Product product = productService.getProductByID(productID);
@@ -72,5 +72,12 @@ public class ProductController {
     public Result updateProducts(@RequestBody Product product){
         productService.updateProduct(product);
         return Result.success();
+    }
+
+    //获取销量最高
+    @GetMapping("/orderBySalesVolume")
+    public Result getProductsOrderBySalesVolume() {
+        List<Product> products =productService.getProductsOrderBySalesVolume();
+        return Result.success(products);
     }
 }

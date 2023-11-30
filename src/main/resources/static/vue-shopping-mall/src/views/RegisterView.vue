@@ -46,7 +46,7 @@
 
 <script>
 import axios from "axios";
-import { add } from "../api/user";
+import { add, register } from "../api/user";
 export default {
   name: "register",
   components: { axios },
@@ -89,7 +89,7 @@ export default {
         if (valid) {
           this.loading = true;
           //调用后端接口进行创建
-          add(this.ruleForm).then((res) => {
+          register(this.ruleForm).then((res) => {
             if (res.data.code == 1) {
               alert("创建成功!即将跳转至登录页面...");
               this.$router.push("/login");

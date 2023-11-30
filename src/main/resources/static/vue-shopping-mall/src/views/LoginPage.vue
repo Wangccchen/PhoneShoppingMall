@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       loginForm: {
-        userID: 0,
+        userID: "",
         username: "",
         password: "",
         email: "",
@@ -84,19 +84,27 @@ export default {
         // },
       });
     },
-    doSubmit() {
-      // console.log(this.loginForm.username, this.loginForm.password);
-      login(this.loginForm).then((res) => {
-        if (res.data.code == 1) {
-          console.log(res.data.data);
-          //设置token
-          setToken(res.data.data);
+    async doSubmit() {
+      try {
+        const loginRes = await login(this.loginForm);
+        if (loginRes.data.code === 1) {
+          // 登录成功，保存 token
+          setToken(loginRes.data.data);
           this.$message.success("登录成功！正在跳转......");
-          this.$router.push("/backsystem");
+          this.$router.push("/mall");
+
+          // 获取用户信息并保存到 Vuex 中
+          await this.$store.dispatch(
+            "user/fetchUserInfo",
+            this.loginForm.username
+          );
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(loginRes.data.msg);
         }
-      });
+      } catch (error) {
+        // 处理请求失败情况
+        console.error("Error during login:", error);
+      }
     },
     //展示密码
     showPwd() {

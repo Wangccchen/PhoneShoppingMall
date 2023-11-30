@@ -52,4 +52,9 @@
             #{productId}
         </foreach>
     </delete>
+
+<!--    商品销量排序-->
+    <select id="getProductsOrderBySalesVolume" resultType="com.wangchen.pojo.Product">
+        SELECT * FROM Products ORDER BY SalesVolume DESC
+    </select>
 </mapper>

@@ -15,6 +15,14 @@ export function add(user) {
   })
 }
 
+export function register(user) {
+  return request({
+    url: '/users',
+    method: 'post',
+    data: user
+  })
+}
+
 export function update(user) {
   return request({
     url: '/backsystem/users',
@@ -31,6 +39,13 @@ export function deleteById(id) {
   })
 }
 
+export function cancel(id) {
+  return request({
+    url: '/users/delete/'+id,
+    method: 'delete',
+  })
+}
+
 export function deleteByIds(id) {
   return request({
     url: '/backsystem/users/deleteBatch',
@@ -41,8 +56,20 @@ export function deleteByIds(id) {
 
 export function selectById(id) {
   return request({
-    url: '/backsystem/users/'+id,
+    url: '/backsystem/users',
     method: 'get',
+    params:{
+      id:id
+    }
   })
 }
 
+export function getInfoByName(name) {
+  return request({
+    url: '/users/getByUsername',
+    method: 'get',
+    params:{
+      username:name
+    }
+  })
+}

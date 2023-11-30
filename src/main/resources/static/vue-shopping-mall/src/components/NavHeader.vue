@@ -9,14 +9,27 @@
           <a href="javascript:;">协议规则</a>
         </div>
         <div class="top-user">
-          <a href="javascript:;" v-if="username">{{ username }}</a>
+          <el-dropdown
+            class="userNav"
+            trigger="click"
+            v-if="username != ''"
+            @command="handleCommand"
+          >
+            <span class="el-dropdown-link">
+              欢迎您： {{ username
+              }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+              <el-dropdown-item command="delete">注销用户</el-dropdown-item>
+              <el-dropdown-item command="gotoCart">我的购物车</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <a href="javascript:;" v-if="!username" @click="login">登录</a>
-          <a href="javascript:;" @click="register">注册</a>
-          <a href="javascript:;" @click="goToBack">后台管理系统</a>
-          <!-- <a href="javascript:;" class="my-cart" @click="goToCart">
-            <span class="icon-cart"></span>
-            购物车({{ cartcount }})
-          </a> -->
+          <a href="javascript:;" v-if="!username" @click="register">注册</a>
+          <a href="javascript:;" v-if="!username" @click="goToBack"
+            >后台管理系统</a
+          >
         </div>
       </div>
     </div>
@@ -24,6 +37,10 @@
 </template>
 
 <script>
+import { getToken, removeToken } from "@/utils/token";
+import { jwtDecode } from "jwt-decode";
+import { cancel } from "@/api/user";
+// const jwt_decode = require("jwt-decode");
 export default {
   name: "nav-header",
   data() {
@@ -32,8 +49,30 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      const storedToken = getToken();
+
+      if (storedToken) {
+        // 解析 token 为 JSON 对象
+        const decodedToken = jwtDecode(storedToken);
+        // 将解析后的用户信息存储到 Vuex 中
+        this.$store.dispatch("user/setUserInfo", decodedToken);
+        // 从解析后的 JSON 对象中获取用户名或其他信息
+        this.username = decodedToken.username;
+      }
+    }, 0);
+  },
   methods: {
+    handleCommand(command) {
+      if (command == "logout") {
+        this.logout();
+      } else if (command == "cancel") {
+        this.cancelUser();
+      } else if (command == "gotoCart") {
+        this.gotoCart();
+      }
+    },
     login() {
       this.$router.push("/login");
     },
@@ -44,6 +83,32 @@ export default {
       this.$router.push("/back/login");
       // Router.replace("/back/login");
     },
+    async cancelUser() {
+      try {
+        // 从 Vuex 获取用户 ID
+        const userId = this.$store.state.user.userInfo.userID;
+
+        // 发送取消删除用户的 Axios 请求
+        const response = await cancel(userId);
+
+        // 处理响应，可以根据后端返回的信息进行进一步的操作
+        console.log("注销成功! :", response.data);
+        //注销后退出登录
+        this.logout();
+      } catch (error) {
+        console.error("注销用户发现错误!:", error);
+      }
+    },
+    logout() {
+      // 清空 Vuex 中的用户信息和本地存储的 token
+      this.$store.dispatch("user/clearUserInfo");
+      removeToken();
+      // 重新加载页面
+      window.location.reload();
+    },
+    gotoCart() {
+      this.$router.push("/mall/cart");
+    },
   },
 };
 </script>
@@ -52,6 +117,17 @@ export default {
 @import "./../assets/scss/base.scss";
 @import "./../assets/scss/mixin.scss";
 @import "./../assets/scss/config.scss";
+
+.userNav {
+  font-size: 17px;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  color: #b0b0b0;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
 
 .header {
   .nav-topbar {
@@ -70,18 +146,6 @@ export default {
 
         &:hover {
           color: #ffffff;
-        }
-      }
-
-      .my-cart {
-        width: 110px;
-        text-align: center;
-        background-color: #67c23a;
-        color: #ffffff;
-        margin-right: 0px;
-
-        .icon-cart {
-          margin-right: 4px;
         }
       }
     }

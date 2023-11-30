@@ -1,5 +1,6 @@
 package com.wangchen.filter;
 
+
 import com.alibaba.fastjson.JSONObject;
 import com.wangchen.pojo.Result;
 import com.wangchen.utils.JwtUtils;
@@ -13,9 +14,9 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 
 
-@WebFilter(urlPatterns = "/backsystem/*")
+@WebFilter(urlPatterns = "/mall/*")
 @Order(1)
-public class BackCheckLoginFilter implements Filter {
+public class MallCheckLogin implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException, IOException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -27,12 +28,12 @@ public class BackCheckLoginFilter implements Filter {
         System.out.println();
         //获取请求头中的令牌（token）
         String token = request.getHeader("token");
-        System.out.println("从请求头中获取的令牌："+token);
+        System.out.println("前台商城：从请求头中获取的令牌："+token);
 
         //判断令牌是否存在，如果不存在，返回错误结果（未登录）
         if(!StringUtils.hasLength(token)){
             System.out.println("Token不存在");
-            Result responseResult = Result.error("NOT_LOGIN");
+            Result responseResult = Result.error("NOT_LOGIN_USER");
             //把Result对象转换为JSON格式字符串
             String json = JSONObject.toJSONString(responseResult);
             response.setContentType("application/json;charset=utf-8");
@@ -46,7 +47,7 @@ public class BackCheckLoginFilter implements Filter {
             System.out.println(JwtUtils.parseJWT(token));
         }catch (Exception e){
             System.out.println("令牌解析失败!");
-            Result responseResult = Result.error("NOT_LOGIN");
+            Result responseResult = Result.error("NOT_LOGIN_USER");
             //把Result对象转换为JSON格式字符串
             String json = JSONObject.toJSONString(responseResult);
             response.setContentType("application/json;charset=utf-8");
@@ -71,3 +72,4 @@ public class BackCheckLoginFilter implements Filter {
         Filter.super.destroy();
     }
 }
+

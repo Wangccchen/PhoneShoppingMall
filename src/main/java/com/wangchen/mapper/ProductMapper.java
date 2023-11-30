@@ -38,4 +38,7 @@ public interface ProductMapper {
     List<Product> getProductsByPage(@Param("start") int start, @Param("pageSize") int pageSize);
 
     int getTotalProductsCount();
+
+    List<Product> getProductsOrderBySalesVolume();
 }
+

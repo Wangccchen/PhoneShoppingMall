@@ -15,7 +15,6 @@ service.interceptors.request.use(
     if(token){
       //为请求添加token给后端识别
       config.headers['token'] = token;
-      console.log("拿到了token1: "+config.headers['token']);
     }
     return config;
   },
@@ -27,13 +26,19 @@ service.interceptors.request.use(
 
 //axios响应拦截器
 service.interceptors.response.use(res=>{
-  if (res.data.code === 0 && res.data.msg === 'NOT_LOGIN') {// 返回登录页面
+  if (res.data.code === 0 && res.data.msg === 'NOT_LOGIN_USER') {// 返回登录页面
     console.log('用户未登录!');
     removeToken();
-    Router.replace('/back/login');
-    console.log("跳转至登陆界面！");
+    Router.replace('/login');
+    console.log("跳转至用户登录界面！");
     return res;
-  } else {
+  } else if(res.data.code === 0 && res.data.msg === 'NOT_LOGIN'){
+    console.log('管理员未登录!');
+    removeToken();
+    Router.replace('/back/login');
+    console.log("跳转至后台登录界面！");
+    return res;
+  }else{
     return res;
   }
 },

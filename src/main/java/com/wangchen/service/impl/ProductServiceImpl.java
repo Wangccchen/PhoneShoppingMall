@@ -72,4 +72,9 @@ public class ProductServiceImpl implements ProductService {
 
         return pageBean;
     }
+
+    @Override
+    public List<Product> getProductsOrderBySalesVolume() {
+        return productMapper.getProductsOrderBySalesVolume();
+    }
 }

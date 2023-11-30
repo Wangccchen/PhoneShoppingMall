@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+// store/index.js
 
-Vue.use(Vuex)
+import Vue from 'vue';
+import Vuex from 'vuex';
+import userModule from './modules/user.js';
 
-export default new Vuex.Store({
-  state: {
-  },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
   modules: {
+    user: userModule,
+    // 可以添加其他模块
   }
-})
+});
+
+export default store;
+

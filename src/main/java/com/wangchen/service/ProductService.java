@@ -14,4 +14,5 @@ public interface ProductService {
     List<Product> searchProductsByName(String keyword);
     PageBean getProductsByPage(int currentPage, int pageSize);
     Product getProductByID(int productID);
+    List<Product> getProductsOrderBySalesVolume();
 }

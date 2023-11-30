@@ -5,17 +5,33 @@
         <div class="logo"></div>
         <div class="search">
           <el-input placeholder="请输入内容" v-model="input" class="input">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="searchForProduct"
+            ></el-button>
           </el-input>
         </div>
       </el-header>
       <el-container>
         <el-aside width="200px">
           <el-menu :default-openeds="['1', '5']">
-            <el-menu-item index="1"> 全部 </el-menu-item>
-            <el-menu-item index="2"> 智能手机 </el-menu-item>
-            <el-menu-item index="3"> 平板电脑 </el-menu-item>
-            <el-menu-item index="4">笔记本电脑</el-menu-item>
+            <el-menu-item index="1" @click="fetchProductList">
+              全部
+            </el-menu-item>
+
+            <el-menu-item index="2" @click="getHighPhone">
+              销量最高
+            </el-menu-item>
+            <el-menu-item-group>
+              <template slot="title">品牌</template>
+              <el-menu-item index="3" @click="getHUAWEI">
+                HUAWEI 华为 手机
+              </el-menu-item>
+              <el-menu-item index="4" @click="getAPPLE">
+                APPLE 苹果 手机
+              </el-menu-item>
+            </el-menu-item-group>
           </el-menu>
         </el-aside>
         <el-main>
@@ -44,7 +60,12 @@
                   <div class="bottom clearfix">
                     <div class="description">{{ product.description }}</div>
                     <div class="price">{{ product.price }}元</div>
-                    <el-button type="text" class="button">操作按钮</el-button>
+                    <el-button
+                      type="text"
+                      class="button"
+                      @click="showDetailAndGetID(product)"
+                      >查看详情</el-button
+                    >
                   </div>
                   <!-- <div class="description">{{ product.description }}</div> -->
                   <!-- <div class="price">价格：{{ product.price }}</div>
@@ -56,16 +77,56 @@
         </el-main>
       </el-container>
     </el-container>
+    <el-drawer
+      title="商品详情"
+      :visible.sync="prodVisible"
+      direction="ltr"
+      size="50%"
+    >
+      <img
+        :src="'imgs/productPics/' + this.singleProd.prodImage"
+        class="imageDetail"
+      />
+      <div style="padding: 14px">
+        <span class="productName1">{{ this.singleProd.prodName }}</span>
+        <div class="bottom clearfix">
+          <div class="description1">{{ this.singleProd.prodDescrip }}</div>
+          <div class="description1">已售：{{ this.singleProd.prodVolume }}</div>
+          <div class="description1">还剩：{{ this.singleProd.prodStocks }}</div>
+          <div class="price1">{{ this.singleProd.prodPrice }}元</div>
+          <el-button type="danger" round class="button1">加入购物车</el-button>
+        </div>
+        <!-- <div class="description">{{ product.description }}</div> -->
+        <!-- <div class="price">价格：{{ product.price }}</div>
+                  <el-button type="text" class="button">操作按钮</el-button> -->
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import { allProducts } from "@/api/prod";
+import {
+  allProducts,
+  searchByKeywords,
+  getHighPhone,
+  selectById,
+  getDetailById,
+} from "@/api/prod";
 export default {
   data() {
     return {
       input: "",
       productList: [],
+      prodVisible: false,
+      singleProd: {
+        prodID: "",
+        prodImage: "",
+        prodName: "",
+        prodDescrip: "",
+        prodPrice: "",
+        prodVolume: "",
+        prodStocks: "",
+      },
     };
   },
   mounted() {
@@ -81,11 +142,50 @@ export default {
       for (let i = 0; i < this.productList.length; i += chunkSize) {
         chunkedProducts.push(this.productList.slice(i, i + chunkSize));
       }
-      console.log(chunkedProducts);
       return chunkedProducts;
     },
   },
   methods: {
+    open4() {
+      this.$message.error("请先进行登录操作！");
+    },
+
+    async showDetailAndGetID(product) {
+      this.singleProd.prodID = product.productID;
+      let res;
+      try {
+        // 获取到商品的id之后，下面发一个axios请求
+        // 以此来触发检查登录的拦截器
+        res = await getDetailById(product.productID);
+        console.log(res.data);
+
+        // 如果返回的是未登录，则跳转至登录界面
+        // 实际上在axios添加了响应拦截器，已经提前跳转了
+        // 此处是弹出提示框
+        if (res.data.code == 0 && res.data.msg == "NOT_LOGIN_USER") {
+          this.open4();
+          return;
+        } else {
+          this.prodVisible = true;
+          this.singleProd.prodImage = product.imageURL;
+          this.singleProd.prodDescrip = product.description;
+          this.singleProd.prodName = product.productName;
+          this.singleProd.prodPrice = product.price;
+          this.singleProd.prodStocks = product.stockQuantity;
+          this.singleProd.prodVolume = product.salesVolume;
+        }
+      } catch (error) {
+        // 处理请求失败的情况
+        console.error("Error fetching details:", error);
+        // 可以添加适当的错误处理逻辑
+        return;
+      }
+
+      // 异步操作完成后执行以下代码
+
+      // console.log(this.singleProd.prodImage);
+      // 此处应该记录日志相关信息
+    },
     fetchProductList() {
       allProducts()
         .then((response) => {
@@ -102,11 +202,83 @@ export default {
           console.error("获取商品列表时出错:", error);
         });
     },
+    searchForProduct() {
+      searchByKeywords(this.input)
+        .then((response) => {
+          console.log(response.data);
+          const result = response.data;
+          if (result.code === 1) {
+            console.log(response.data);
+            // 更新商品列表数据
+            this.productList = result.data;
+          } else {
+            console.error(result.msg);
+          }
+        })
+        .catch((error) => {
+          console.error("搜索商品时出错:", error);
+        });
+      this.input = "";
+    },
+    getHighPhone() {
+      getHighPhone()
+        .then((response) => {
+          console.log(response.data);
+          const result = response.data;
+          if (result.code === 1) {
+            console.log(response.data);
+            // 更新商品列表数据
+            this.productList = result.data;
+          } else {
+            console.error(result.msg);
+          }
+        })
+        .catch((error) => {
+          console.error("无法获取:", error);
+        });
+    },
+    getHUAWEI() {
+      searchByKeywords("HUAWEI")
+        .then((response) => {
+          console.log(response.data);
+          const result = response.data;
+          if (result.code === 1) {
+            console.log(response.data);
+            // 更新商品列表数据
+            this.productList = result.data;
+          } else {
+            console.error(result.msg);
+          }
+        })
+        .catch((error) => {
+          console.error("出错:", error);
+        });
+    },
+    getAPPLE() {
+      searchByKeywords("APPLE")
+        .then((response) => {
+          console.log(response.data);
+          const result = response.data;
+          if (result.code === 1) {
+            console.log(response.data);
+            // 更新商品列表数据
+            this.productList = result.data;
+          } else {
+            console.error(result.msg);
+          }
+        })
+        .catch((error) => {
+          console.error("出错:", error);
+        });
+    },
   },
 };
 </script>
 
 <style>
+.imageDetail {
+  width: 50%;
+}
 .row {
   margin-bottom: 20px;
 }
@@ -115,6 +287,13 @@ export default {
   -webkit-line-clamp: 1; /* 指定行数 */
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.productName1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* 指定行数 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 50px;
 }
 .description {
   display: -webkit-box;
@@ -126,13 +305,26 @@ export default {
   font-size: 12px;
   color: #909399;
 }
-
+.description1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 指定行数 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 25px;
+  height: 50px;
+  font-size: 25px;
+  color: #909399;
+}
 .price {
   margin-top: 25px;
   font-size: 30px;
   color: #f56c6c;
 }
-
+.price1 {
+  margin-top: 25px;
+  font-size: 50px;
+  color: #f56c6c;
+}
 .card {
   text-align: left;
   /* line-height: 0px; */
@@ -150,6 +342,10 @@ export default {
 .button {
   padding: 0;
   float: right;
+}
+.button1 {
+  float: right;
+  size: medium;
 }
 
 .image {

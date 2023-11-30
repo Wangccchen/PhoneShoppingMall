@@ -52,3 +52,32 @@ export function selectById(id) {
     method: 'get',
   })
 }
+
+export function getDetailById(id) {
+  return request({
+    url: '/mall/products/'+id,
+    method: 'get',
+  })
+}
+
+export function searchByKeywords(keyword) {
+  return request({
+    url: '/products/search',
+    method: 'get',
+    params:{
+      keyword:keyword
+    }
+  })
+}
+
+
+export function getHighPhone() {
+  return request({
+    url: '/orderBySalesVolume',
+    method: 'get',
+  })
+}
+
+
+
+
