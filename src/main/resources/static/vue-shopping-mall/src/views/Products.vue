@@ -94,7 +94,9 @@
           <div class="description1">已售：{{ this.singleProd.prodVolume }}</div>
           <div class="description1">还剩：{{ this.singleProd.prodStocks }}</div>
           <div class="price1">{{ this.singleProd.prodPrice }}元</div>
-          <el-button type="danger" round class="button1">加入购物车</el-button>
+          <el-button type="danger" round class="button1" @click="addProduct"
+            >加入购物车</el-button
+          >
         </div>
         <!-- <div class="description">{{ product.description }}</div> -->
         <!-- <div class="price">价格：{{ product.price }}</div>
@@ -112,6 +114,7 @@ import {
   selectById,
   getDetailById,
 } from "@/api/prod";
+import { getCartId, addProduct } from "@/api/cart";
 export default {
   data() {
     return {
@@ -126,6 +129,13 @@ export default {
         prodPrice: "",
         prodVolume: "",
         prodStocks: "",
+      },
+      // 构造 cartItem 对象
+      cartItem: {
+        cartItemID: 0,
+        cartID: "",
+        productID: "",
+        quantity: 1,
       },
     };
   },
@@ -185,6 +195,28 @@ export default {
 
       // console.log(this.singleProd.prodImage);
       // 此处应该记录日志相关信息
+    },
+    async addProduct() {
+      try {
+        // 从 Vuex 获取用户 ID
+        const userId = this.$store.state.user.userInfo.userid;
+
+        // 调用封装好的 axios 请求获取 cartId
+        const cartId = await getCartId(userId);
+
+        this.cartItem.cartID = cartId.data.data;
+        this.cartItem.productID = this.singleProd.prodID;
+
+        console.log(this.cartItem);
+        // 调用封装好的 axios 请求添加商品到购物车
+        await addProduct(this.cartItem);
+
+        // 在这里可以处理成功添加商品到购物车的逻辑
+        console.log("Product added to the cart successfully!");
+      } catch (error) {
+        // 在这里处理错误
+        console.error("Error while adding product to the cart:", error);
+      }
     },
     fetchProductList() {
       allProducts()

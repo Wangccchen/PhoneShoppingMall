@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangchen.mapper.CartItemsMapper">
+
+    <!-- 添加商品到购物车 -->
+    <insert id="addProductToCart" parameterType="com.wangchen.pojo.CartItem">
+        INSERT INTO CartItems (CartID, ProductID, Quantity)
+        VALUES (#{cartID}, #{productID}, #{quantity})
+        ON DUPLICATE KEY UPDATE Quantity = Quantity + #{quantity};
+    </insert>
+
+    <!-- 根据 UserID 获取对应的 CartID -->
+    <select id="getCartIDByUserID" resultType="int" parameterType="int">
+        SELECT CartID FROM ShoppingCart WHERE UserID = #{userID}
+    </select>
+
+</mapper>

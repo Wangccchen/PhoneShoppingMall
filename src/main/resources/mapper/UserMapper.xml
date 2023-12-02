@@ -3,10 +3,20 @@
 <mapper namespace="com.wangchen.mapper.UserMapper">
 
     <!-- 添加用户 -->
+<!--    <insert id="addUser" parameterType="com.wangchen.pojo.User">-->
+<!--        INSERT INTO Users (Username, Password, Email, Address, PhoneNumber)-->
+<!--        VALUES (#{username}, #{password}, #{email}, #{address}, #{phoneNumber})-->
+<!--    </insert>-->
     <insert id="addUser" parameterType="com.wangchen.pojo.User">
+        <!-- 插入用户 -->
         INSERT INTO Users (Username, Password, Email, Address, PhoneNumber)
-        VALUES (#{username}, #{password}, #{email}, #{address}, #{phoneNumber})
+        VALUES (#{username}, #{password}, #{email}, #{address}, #{phoneNumber});
+
+        <!-- 插入购物车记录，关联到新用户 -->
+        INSERT INTO ShoppingCart (UserID)
+        VALUES (LAST_INSERT_ID());
     </insert>
+
 
     <!-- 删除用户 -->
     <delete id="deleteUser" parameterType="int">
