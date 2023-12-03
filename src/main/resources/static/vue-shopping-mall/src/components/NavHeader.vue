@@ -33,6 +33,58 @@
         </div>
       </div>
     </div>
+    <el-drawer
+      title="购物车列表"
+      :visible.sync="shoppingCartVisible"
+      direction="rtl"
+      size="50%"
+    >
+      <el-table :data="cartItemList">
+        <!-- <el-table-column
+          property="imageURL"
+          label="产品图片"
+          width="150"
+        ></el-table-column> -->
+        <el-table-column label="产品图片" width="150">
+          <template slot-scope="scope">
+            <img
+              :src="'imgs/productPics/' + scope.row.imageURL"
+              alt="Product Image"
+              style="width: 100%; height: auto"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          property="productName"
+          label="产品名"
+          width="200"
+        ></el-table-column>
+        <el-table-column label="购买数量">
+          <template slot-scope="scope">
+            <el-input-number
+              v-model="scope.row.quantity"
+              :min="1"
+              :max="10"
+              :step="1"
+              controls-position="right"
+              @change="
+                handleQuantityChange(scope.row.productID, scope.row.quantity)
+              "
+            ></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="120">
+          <template slot-scope="scope">
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              @click="showDeleteConfirm(scope.row.productID)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>
   </div>
 </template>
 
@@ -40,12 +92,22 @@
 import { getToken, removeToken } from "@/utils/token";
 import { jwtDecode } from "jwt-decode";
 import { cancel } from "@/api/user";
+import {
+  deleteById,
+  getCartId,
+  getProdsByCartId,
+  updateQuantity,
+} from "@/api/cart";
+import { getById } from "@/api/prod";
 // const jwt_decode = require("jwt-decode");
 export default {
   name: "nav-header",
   data() {
     return {
       username: "",
+      cartItemList: [],
+      cartID: "",
+      shoppingCartVisible: false,
     };
   },
 
@@ -70,8 +132,78 @@ export default {
       } else if (command == "cancel") {
         this.cancelUser();
       } else if (command == "gotoCart") {
-        this.gotoCart();
+        this.showcart();
       }
+    },
+    open1() {
+      this.$notify({
+        title: "删除成功！",
+        message: "您已经删除商品！",
+        type: "success",
+        position: "top-left",
+      });
+    },
+    showDeleteConfirm(productID) {
+      this.$confirm("确定要删除该商品吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.open1();
+          // 用户点击了确定按钮，执行删除操作
+          this.deleteCartItem(productID);
+        })
+        .catch(() => {
+          // 用户点击了取消按钮，不执行任何操作
+        });
+    },
+
+    deleteCartItem(productID) {
+      // 在这里发送 Axios 请求，调用删除接口，并传递 cartID 和 productID
+      deleteById(this.cartID, productID)
+        .then((res) => {
+          if (res.data.code === 1) {
+            // 成功处理逻辑，可以根据需求进行处理
+            console.log("CartItem deleted successfully!");
+          } else {
+            // 失败处理逻辑，显示错误信息等
+            console.error("Failed to delete cartItem:", res.data.msg);
+          }
+        })
+        .catch((error) => {
+          // 异常处理逻辑，显示错误信息等
+          console.error("Error delete cartItem:", error);
+        });
+      // 然后刷新购物车列表等逻辑
+      this.getShoppingCartList();
+    },
+    handleQuantityChange(productID, newQuantity) {
+      // 在这里触发 Axios 请求
+      this.updateQuantity(productID, newQuantity);
+    },
+    updateQuantity(productID, newQuantity) {
+      const cartItem = {
+        cartItemID: "",
+        cartID: this.cartID,
+        productID: productID,
+        quantity: newQuantity,
+      };
+      // 发送 Axios 请求，调用 updateQuan 接口
+      updateQuantity(cartItem)
+        .then((res) => {
+          if (res.data.code === 1) {
+            // 成功处理逻辑，可以根据需求进行处理
+            console.log("Quantity updated successfully!");
+          } else {
+            // 失败处理逻辑，显示错误信息等
+            console.error("Failed to update quantity:", res.data.msg);
+          }
+        })
+        .catch((error) => {
+          // 异常处理逻辑，显示错误信息等
+          console.error("Error updating quantity:", error);
+        });
     },
     login() {
       this.$router.push("/login");
@@ -82,6 +214,57 @@ export default {
     goToBack() {
       this.$router.push("/back/login");
       // Router.replace("/back/login");
+    },
+    showcart() {
+      // 显示购物车
+      this.shoppingCartVisible = true;
+      this.getShoppingCartList();
+    },
+    getShoppingCartList() {
+      // 从 Vuex 获取用户 ID
+      const userId = this.$store.state.user.userInfo.userid;
+
+      // 调用封装好的 axios 请求获取 cartId
+      getCartId(userId)
+        .then((response) => {
+          this.cartID = response.data.data;
+
+          // 调用封装好的 axios 请求获取购物车内的产品列表
+          getProdsByCartId(this.cartID)
+            .then((prodResponse) => {
+              // 清空购物车列表
+              this.cartItemList = [];
+              // 遍历购物车内的产品列表
+              prodResponse.data.data.forEach((product) => {
+                // 调用封装好的 axios 请求获取产品数量
+                getById(this.cartID, product.productID)
+                  .then((numResponse) => {
+                    // 将产品信息重新封装成 cartItem 对象
+                    const cartItem = {
+                      productID: product.productID,
+                      imageURL: product.imageURL,
+                      productName: product.productName,
+                      quantity: numResponse.data.data, // 使用获取的产品数量
+                    };
+
+                    // 将 cartItem 加入购物车列表
+                    this.cartItemList.push(cartItem);
+                  })
+                  .catch((error) => {
+                    console.error(
+                      "Error while getting product quantity:",
+                      error
+                    );
+                  });
+              });
+            })
+            .catch((error) => {
+              console.error("Error while getting products by cart:", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error while getting cart ID:", error);
+        });
     },
     async cancelUser() {
       try {
@@ -105,9 +288,6 @@ export default {
       removeToken();
       // 重新加载页面
       window.location.reload();
-    },
-    gotoCart() {
-      this.$router.push("/mall/cart");
     },
   },
 };

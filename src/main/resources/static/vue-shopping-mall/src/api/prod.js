@@ -53,6 +53,13 @@ export function selectById(id) {
   })
 }
 
+export function getById(cartID,productID) {
+  return request({
+    url: '/cart/get-quantity/'+cartID+'/'+productID,
+    method: 'get',
+  })
+}
+
 export function getDetailById(id) {
   return request({
     url: '/mall/products/'+id,

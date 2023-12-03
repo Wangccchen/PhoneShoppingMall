@@ -40,5 +40,9 @@ public interface ProductMapper {
     int getTotalProductsCount();
 
     List<Product> getProductsOrderBySalesVolume();
+
+    List<Product> getProductsByProductIds(List<Integer> productIds);
+
+
 }
 

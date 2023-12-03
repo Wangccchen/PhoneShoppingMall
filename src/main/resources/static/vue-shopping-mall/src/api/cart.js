@@ -14,3 +14,25 @@ export function getCartId(userId) {
       method: 'get',
     })
   }
+
+  export function getProdsByCartId(cartId) {
+    return request({
+      url: '/cart/get-products/'+cartId,
+      method: 'get',
+    })
+  }
+
+  export function updateQuantity(cartItem) {
+    return request({
+      url: '/cart/updateQuantity',
+      method: 'post',
+      data: cartItem
+    })
+  }
+
+  export function deleteById(cartID,productID) {
+    return request({
+      url: '/cart/deleteCartItem/'+cartID+'/'+productID,
+      method: 'delete',
+    })
+  }

@@ -57,4 +57,12 @@
     <select id="getProductsOrderBySalesVolume" resultType="com.wangchen.pojo.Product">
         SELECT * FROM Products ORDER BY SalesVolume DESC
     </select>
+
+    <!-- 根据 ProductID 查询对应的 Products -->
+    <select id="getProductsByProductIds" resultType="com.wangchen.pojo.Product">
+        SELECT * FROM Products WHERE ProductID IN
+        <foreach item="productId" collection="productIds" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </select>
 </mapper>

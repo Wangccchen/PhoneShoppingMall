@@ -14,4 +14,27 @@
         SELECT CartID FROM ShoppingCart WHERE UserID = #{userID}
     </select>
 
+    <!-- 根据 CartID 查询对应的 ProductID -->
+    <select id="getProductIdsByCartId" resultType="Integer" parameterType="Integer">
+        SELECT ProductID FROM CartItems WHERE CartID = #{cartId}
+    </select>
+
+    <!-- 根据 CartID 和 ProductID 查询对应的 Quantity -->
+    <select id="getQuantityByCartIdAndProductId" resultType="Integer" parameterType="Map">
+        SELECT Quantity FROM CartItems
+        WHERE CartID = #{cartID} AND ProductID = #{productID}
+    </select>
+
+    <!-- 根据 cartID、productID 和传入的 quantity 修改 quantity 列 -->
+    <update id="updateCartItemQuantity" parameterType="com.wangchen.pojo.CartItem">
+        UPDATE CartItems
+        SET Quantity = #{quantity}
+        WHERE CartID = #{cartID} AND ProductID = #{productID}
+    </update>
+
+    <!-- 删除购物车项 -->
+    <delete id="deleteCartItem" parameterType="map">
+        DELETE FROM CartItems
+        WHERE CartID = #{cartID} AND ProductID = #{productID}
+    </delete>
 </mapper>

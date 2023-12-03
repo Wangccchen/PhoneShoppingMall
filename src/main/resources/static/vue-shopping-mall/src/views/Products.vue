@@ -120,7 +120,9 @@ export default {
     return {
       input: "",
       productList: [],
+
       prodVisible: false,
+
       singleProd: {
         prodID: "",
         prodImage: "",
@@ -159,7 +161,13 @@ export default {
     open4() {
       this.$message.error("请先进行登录操作！");
     },
-
+    open1() {
+      this.$notify({
+        title: "添加成功！",
+        message: "您已经成功添加一件商品到购物车！",
+        type: "success",
+      });
+    },
     async showDetailAndGetID(product) {
       this.singleProd.prodID = product.productID;
       let res;
@@ -198,6 +206,7 @@ export default {
     },
     async addProduct() {
       try {
+        this.open1();
         // 从 Vuex 获取用户 ID
         const userId = this.$store.state.user.userInfo.userid;
 
