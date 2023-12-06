@@ -1,5 +1,5 @@
 // store/modules/user.js
-import { getInfoByName } from '../../api/user';
+import { getInfoByName,updateInfo } from '../../api/user';
 const state = {
     userInfo: null
   };
@@ -10,7 +10,21 @@ const state = {
     },
     clearUserInfo(state) {
       state.userInfo = null;
-    }
+    },
+    updateUserInfo(state, { email, address, phoneNumber }) {
+      // 如果 userInfo 为 null，则初始化为一个空对象
+      if (!state.userInfo) {
+        state.userInfo = {};
+      }
+  
+      // 更新字段
+      state.userInfo.email = email;
+      state.userInfo.address = address;
+      state.userInfo.phoneNumber = phoneNumber;
+      
+
+    
+    },
   };
   
   const actions = {
@@ -34,6 +48,13 @@ const state = {
     },
     setUserInfo({ commit }, userInfo) {
       commit('setUserInfo', userInfo);
+    },
+    async updateUser({ commit, state }) {
+      try {
+        await updateInfo(state.userInfo);
+      } catch (error) {
+        console.error("Failed to update user:", error);
+      }
     },
   };
   

@@ -84,6 +84,12 @@
           </template>
         </el-table-column>
       </el-table>
+      <div style="text-align: right; margin-top: 10px">
+        <el-button type="primary" @click="gotoCheck">
+          去结算
+          <i class="el-icon-arrow-right el-icon--right go-to-check"></i>
+        </el-button>
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -118,8 +124,8 @@ export default {
       if (storedToken) {
         // 解析 token 为 JSON 对象
         const decodedToken = jwtDecode(storedToken);
-        // 将解析后的用户信息存储到 Vuex 中
-        this.$store.dispatch("user/setUserInfo", decodedToken);
+        //再通过token中的对象名来获取具体的user信息并存储到 Vuex 中
+        this.$store.dispatch("user/fetchUserInfo", decodedToken.username);
         // 从解析后的 JSON 对象中获取用户名或其他信息
         this.username = decodedToken.username;
       }
@@ -129,7 +135,7 @@ export default {
     handleCommand(command) {
       if (command == "logout") {
         this.logout();
-      } else if (command == "cancel") {
+      } else if (command == "delete") {
         this.cancelUser();
       } else if (command == "gotoCart") {
         this.showcart();
@@ -215,6 +221,9 @@ export default {
       this.$router.push("/back/login");
       // Router.replace("/back/login");
     },
+    gotoCheck() {
+      this.$router.push("/checkout");
+    },
     showcart() {
       // 显示购物车
       this.shoppingCartVisible = true;
@@ -222,8 +231,8 @@ export default {
     },
     getShoppingCartList() {
       // 从 Vuex 获取用户 ID
-      const userId = this.$store.state.user.userInfo.userid;
-
+      const userId = this.$store.state.user.userInfo.userID;
+      console.log(this.$store.state.user.userInfo);
       // 调用封装好的 axios 请求获取 cartId
       getCartId(userId)
         .then((response) => {
@@ -301,6 +310,7 @@ export default {
 .userNav {
   font-size: 17px;
 }
+
 .el-dropdown-link {
   cursor: pointer;
   color: #b0b0b0;

@@ -91,13 +91,13 @@ export default {
           // 登录成功，保存 token
           setToken(loginRes.data.data);
           this.$message.success("登录成功！正在跳转......");
-          this.$router.push("/mall");
 
           // 获取用户信息并保存到 Vuex 中
           await this.$store.dispatch(
             "user/fetchUserInfo",
             this.loginForm.username
           );
+          this.$router.push("/mall");
         } else {
           this.$message.error(loginRes.data.msg);
         }

@@ -36,3 +36,18 @@ export function getCartId(userId) {
       method: 'delete',
     })
   }
+
+  export function checkout(cartId) {
+    return request({
+      url: '/cart/checkout/'+cartId,
+      method: 'get',
+    })
+  }
+
+  export function sendEmail(cartData) {
+    return request({
+      url: '/cart/send',
+      method: 'post',
+      data:cartData
+    })
+  }

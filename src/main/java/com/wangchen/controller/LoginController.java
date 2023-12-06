@@ -40,7 +40,6 @@ public class LoginController {
                     Map<String , Object> claims = new HashMap<>();
                     claims.put("userid", loginUser.getUserID());
                     claims.put("username",loginUser.getUsername());
-                    claims.put("email",loginUser.getEmail());
                     // 使用JWT工具类，生成身份令牌
                     String token = JwtUtils.generateJwt(claims);
                     return Result.success(token);
@@ -53,7 +52,6 @@ public class LoginController {
                     Map<String , Object> claims = new HashMap<>();
                     claims.put("userid", loginUser.getUserID());
                     claims.put("username",loginUser.getUsername());
-                    claims.put("email",loginUser.getEmail());
                     // 使用JWT工具类，生成身份令牌
                     String token = JwtUtils.generateJwt(claims);
                     return Result.success(token);

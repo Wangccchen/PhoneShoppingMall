@@ -31,6 +31,13 @@ export function update(user) {
   })
 }
 
+export function updateInfo(user) {
+  return request({
+    url: '/users',
+    method: 'put',
+    data: user
+  })
+}
 
 export function deleteById(id) {
   return request({

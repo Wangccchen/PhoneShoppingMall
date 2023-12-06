@@ -46,7 +46,11 @@
               :key="index"
               :offset="index % 5 === 0 ? 0 : 1"
             >
-              <el-card class="card" :body-style="{ padding: '0px' }">
+              <el-card
+                class="card"
+                :body-style="{ padding: '0px' }"
+                shadow="hover"
+              >
                 <img
                   :src="'imgs/productPics/' + product.imageURL"
                   class="image"
@@ -208,8 +212,7 @@ export default {
       try {
         this.open1();
         // 从 Vuex 获取用户 ID
-        const userId = this.$store.state.user.userInfo.userid;
-
+        const userId = this.$store.state.user.userInfo.userID;
         // 调用封装好的 axios 请求获取 cartId
         const cartId = await getCartId(userId);
 

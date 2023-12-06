@@ -52,7 +52,7 @@ public class ShoppingCartController {
         }
     }
 
-    @GetMapping("/get-quantity/{cartId}/{productId}")
+    @GetMapping("/get-quantity/{cartID}/{productID}")
     public Result getQuantityByCartIdAndProductId(@PathVariable Integer cartID, @PathVariable Integer productID) {
         try {
             Map<String, Object> params = Map.of("cartID", cartID, "productID", productID);

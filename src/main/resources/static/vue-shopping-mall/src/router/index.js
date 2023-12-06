@@ -23,6 +23,11 @@ const routes = [
     ]
   },
   {
+    path:'/checkout',
+    name:'checkout',
+    component:()=>import('../views/CheckOutView.vue')
+  },
+  {
     path: '/backsystem',
     component: () => import('../views/BackHomePage.vue'),
     children: [
