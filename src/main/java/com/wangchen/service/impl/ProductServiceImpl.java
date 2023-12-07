@@ -1,5 +1,6 @@
 package com.wangchen.service.impl;
 
+import com.wangchen.annotations.Log;
 import com.wangchen.mapper.ProductMapper;
 import com.wangchen.pojo.PageBean;
 import com.wangchen.pojo.Product;
@@ -41,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
 
     //根据ID获得商品
     @Override
+    @Log
     public Product getProductByID(int productID) {
         return productMapper.getProductById(productID);
     }

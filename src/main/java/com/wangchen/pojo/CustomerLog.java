@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Log {
+public class CustomerLog {
     private int logID;
     private int userID;
     private String operationType;

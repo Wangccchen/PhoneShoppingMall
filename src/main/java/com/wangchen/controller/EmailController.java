@@ -1,5 +1,6 @@
 package com.wangchen.controller;
 
+import com.wangchen.annotations.Log;
 import com.wangchen.pojo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,7 +19,8 @@ public class EmailController {
     private JavaMailSender mailSender;
 
     @PostMapping("/send")
-    public Result send(@RequestBody Map<String, Object> requestData) {
+    @Log
+    public Result sendEmailAndBuy(@RequestBody Map<String, Object> requestData) {
         try {
             String email = (String) requestData.get("email");
             String address = (String) requestData.get("address");
