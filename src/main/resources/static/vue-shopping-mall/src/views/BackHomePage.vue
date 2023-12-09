@@ -26,7 +26,9 @@
               <el-menu-item index="1-2">
                 <router-link to="/backsystem/users"> 用户信息 </router-link>
               </el-menu-item>
-              <el-menu-item index="1-3">操作日志</el-menu-item>
+              <el-menu-item index="1-3">
+                <router-link to="/backsystem/logs"> 操作日志 </router-link>
+              </el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>

@@ -38,7 +38,11 @@ const routes = [
       {
         path: '/backsystem/users',
         component: () => import('../views/UserView.vue')
-      }
+      },
+      {
+        path: '/backsystem/logs',
+        component: () => import('../views/LogView.vue')
+      },
     ]
   },
   {

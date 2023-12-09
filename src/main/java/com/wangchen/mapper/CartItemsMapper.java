@@ -20,4 +20,5 @@ public interface CartItemsMapper {
     void updateCartItemQuantity(CartItem cartItem);
     void deleteCartItem(@Param("cartID") int cartID, @Param("productID") int productID);
 
+    void deleteByCartId(@Param("cartID") int cartID);
 }

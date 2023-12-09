@@ -84,6 +84,18 @@ public class ShoppingCartController {
         }
     }
 
+    // 根据 cartID 删除对应行
+    @DeleteMapping("/delete/{cartID}")
+    public Result deleteByCartId(@PathVariable int cartID) {
+        try {
+            shoppingCartService.deleteByCartId(cartID);
+            return Result.success();
+        } catch (Exception e) {
+            return Result.error("Failed to delete cart item.");
+        }
+    }
+
+
     @GetMapping("/checkout/{userId}")
     public Result checkout(@PathVariable int userId) {
         try {

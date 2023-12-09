@@ -63,11 +63,11 @@ export function deleteByIds(id) {
 
 export function selectById(id) {
   return request({
-    url: '/backsystem/users',
+    url: '/backsystem/users/'+id,
     method: 'get',
-    params:{
-      id:id
-    }
+    // params:{
+    //   id:id
+    // }
   })
 }
 

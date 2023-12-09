@@ -85,7 +85,7 @@
         </el-table-column>
       </el-table>
       <div style="text-align: right; margin-top: 10px">
-        <el-button type="primary" @click="gotoCheck">
+        <el-button type="primary" @click="gotoCheck" :disabled="this.disabled">
           去结算
           <i class="el-icon-arrow-right el-icon--right go-to-check"></i>
         </el-button>
@@ -114,6 +114,7 @@ export default {
       cartItemList: [],
       cartID: "",
       shoppingCartVisible: false,
+      disabled: true,
     };
   },
 
@@ -232,7 +233,6 @@ export default {
     getShoppingCartList() {
       // 从 Vuex 获取用户 ID
       const userId = this.$store.state.user.userInfo.userID;
-      console.log(this.$store.state.user.userInfo);
       // 调用封装好的 axios 请求获取 cartId
       getCartId(userId)
         .then((response) => {
@@ -244,28 +244,31 @@ export default {
               // 清空购物车列表
               this.cartItemList = [];
               // 遍历购物车内的产品列表
-              prodResponse.data.data.forEach((product) => {
-                // 调用封装好的 axios 请求获取产品数量
-                getById(this.cartID, product.productID)
-                  .then((numResponse) => {
-                    // 将产品信息重新封装成 cartItem 对象
-                    const cartItem = {
-                      productID: product.productID,
-                      imageURL: product.imageURL,
-                      productName: product.productName,
-                      quantity: numResponse.data.data, // 使用获取的产品数量
-                    };
+              if (prodResponse.data.data != null) {
+                this.disabled = false;
+                prodResponse.data.data.forEach((product) => {
+                  // 调用封装好的 axios 请求获取产品数量
+                  getById(this.cartID, product.productID)
+                    .then((numResponse) => {
+                      // 将产品信息重新封装成 cartItem 对象
+                      const cartItem = {
+                        productID: product.productID,
+                        imageURL: product.imageURL,
+                        productName: product.productName,
+                        quantity: numResponse.data.data, // 使用获取的产品数量
+                      };
 
-                    // 将 cartItem 加入购物车列表
-                    this.cartItemList.push(cartItem);
-                  })
-                  .catch((error) => {
-                    console.error(
-                      "Error while getting product quantity:",
-                      error
-                    );
-                  });
-              });
+                      // 将 cartItem 加入购物车列表
+                      this.cartItemList.push(cartItem);
+                    })
+                    .catch((error) => {
+                      console.error(
+                        "Error while getting product quantity:",
+                        error
+                      );
+                    });
+                });
+              }
             })
             .catch((error) => {
               console.error("Error while getting products by cart:", error);

@@ -16,5 +16,8 @@ public interface ShoppingCartService {
     public void updateCartItemQuantity(int cartID, int productID, int newQuantity);
 
     void deleteCartItem(int cartID, int productID);
+
+    // 根据 cartID 删除对应行
+    void deleteByCartId(int cartID);
 }
 

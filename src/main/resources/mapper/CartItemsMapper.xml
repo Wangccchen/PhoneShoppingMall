@@ -37,4 +37,9 @@
         DELETE FROM CartItems
         WHERE CartID = #{cartID} AND ProductID = #{productID}
     </delete>
+
+    <!-- 根据 cartID 删除对应行 -->
+    <delete id="deleteByCartId" parameterType="int">
+        DELETE FROM CartItems WHERE CartID = #{cartID}
+    </delete>
 </mapper>

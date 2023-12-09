@@ -35,7 +35,6 @@
         WHERE ProductID = #{productID}
     </update>
 
-    <!-- ... 其他映射语句 ... -->
 
     <select id="getProductsByPage" resultType="com.wangchen.pojo.Product">
         SELECT * FROM Products LIMIT #{start}, #{pageSize}

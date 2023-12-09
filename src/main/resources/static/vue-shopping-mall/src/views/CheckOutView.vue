@@ -65,7 +65,7 @@
     </el-container>
     <el-dialog
       title="信息修改"
-      :visible.sync="dialogVisible"
+      :visible.sync="dialogVisible1"
       width="30%"
       @close="handleDialogClose"
     >
@@ -85,20 +85,36 @@
         <el-button type="primary" @click="handleDialogConfirm">确认</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+      <el-result
+        icon="success"
+        title="成功支付购买"
+        subTitle="请前往邮件查收订单消息"
+      >
+        <template slot="extra">
+          <el-button type="primary" size="medium" @click="goBack"
+            >返回主页</el-button
+          >
+        </template>
+      </el-result>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { checkout, getCartId, sendEmail } from "@/api/cart";
+import { checkout, cleanByID, getCartId, sendEmail } from "@/api/cart";
 import { getToken } from "@/utils/token";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { jwtDecode } from "jwt-decode";
+import { getDetailById, getProductByIDForUpdate, updateNums } from "@/api/prod";
 export default {
   data() {
     return {
       userID: 0,
       checkoutData: null,
       dialogVisible: false,
+      dialogVisible1: false,
       form: {
         address: "",
         email: "",
@@ -108,7 +124,11 @@ export default {
   },
   methods: {
     sendMsg() {
-      this.$message("邮件已发送，请注意查收订单！");
+      this.$notify({
+        title: "邮件发送成功",
+        message: "邮件已发送，请注意查收订单！",
+        type: "success",
+      });
     },
     open1() {
       this.$notify({
@@ -126,6 +146,7 @@ export default {
       });
     },
     goBack() {
+      this.dialogVisible = false;
       this.$router.push("/mall");
     },
     ...mapMutations("user", ["updateUserInfo"]),
@@ -133,10 +154,10 @@ export default {
     openDialog() {
       // 打开弹窗时将 form 字段初始化为当前用户信息
       this.form = { ...this.userInfo };
-      this.dialogVisible = true;
+      this.dialogVisible1 = true;
     },
     handleDialogCancel() {
-      this.dialogVisible = false;
+      this.dialogVisible1 = false;
       this.handleDialogClose();
       this.open4();
     },
@@ -159,7 +180,7 @@ export default {
 
       this.updateUserInfo(updatedFields);
       await this.updateUser(); // 调用 updateUser action 发送请求
-      this.dialogVisible = false;
+      this.dialogVisible1 = false;
       this.handleDialogClose();
       this.open1();
     },
@@ -192,16 +213,9 @@ export default {
       }, 2000);
     },
     successPay() {
-      this.$alert("您已成功购买！请登录邮箱查看邮件订单信息！", "通知", {
-        confirmButtonText: "返回主页",
-        showClose: false,
-      });
+      this.dialogVisible = true;
     },
     async goToPay() {
-      //下面进行付款接口的编写
-      //此处就不实现真实付款接口，测试的时候太麻烦
-      this.openFullScreen2();
-      this.successPay();
       //邮件发送
       //获得相关信息
       const info = { ...this.userInfo };
@@ -211,13 +225,22 @@ export default {
         address: info.address,
         cartItems: {},
         totalPrice: this.checkoutData.totalPrice,
+        //下面这个字段是用于更新product库存的作用
+        cartForUpdateStore: [],
       };
 
       // 遍历 checkoutData 中的产品，构造购物车商品列表
       this.checkoutData.products.forEach((item) => {
         const productName = item.product.productName;
         const quantity = item.quantity;
+        const productID = item.product.productID;
         cartData.cartItems[productName] = quantity;
+        //把对应id和数量存进数组
+        const item1 = {
+          productID: productID,
+          quantity: quantity,
+        };
+        cartData.cartForUpdateStore.push(item1);
       });
       const response = await sendEmail(cartData);
       if (response.data.code == 1) {
@@ -225,12 +248,58 @@ export default {
       } else {
         console.log("出现错误:" + response.data.msg);
       }
-      this.sendMsg();
 
-      //购买完，发送完邮件要清空购物车
-      //并且更新对应商品的存量
+      //购买完，发送完邮件要做相关处理
+
       //首先清空购物车
-      
+      //要清除checkoutData的内容
+      //并且要把cartitems表对应的内容删除
+      //在这里可以获取到当前userid找到对应的cartid
+      const userID = info.userID;
+      console.log(userID);
+      const response1 = await getCartId(userID);
+      if (response1.data.code == 1) {
+        console.log("成功获取cartid！");
+      } else {
+        console.log("出现错误:" + response1.data.msg);
+      }
+      const cartID = response1.data.data;
+      const response2 = await cleanByID(cartID);
+      if (response2.data.code == 1) {
+        console.log("成功清空购物车！");
+      } else {
+        console.log("出现错误:" + response2.data.msg);
+      }
+
+      //并且更新对应商品的存量
+      //此处可以根据前面构造的cartData对象，利用id来获取对应商品的行
+      cartData.cartForUpdateStore.forEach((item) => {
+        getProductByIDForUpdate(item.productID).then((res) => {
+          let product = res.data.data;
+          //然后更新stock和salevolumn字段
+          console.log(product);
+          product.stockQuantity -= item.quantity;
+          product.salesVolume += item.quantity;
+          //重新写回
+          updateNums(product)
+            .then((resp) => {
+              if (response2.data.code == 1) {
+                console.log("成功更新商品销售信息！");
+              }
+            })
+            .catch((error) => {
+              console.error("Error while updating product data:", error);
+            });
+        });
+      });
+
+      //下面进行付款接口的编写
+      //此处就不实现真实付款接口，测试的时候太麻烦
+      this.openFullScreen2();
+      setTimeout(() => {
+        this.successPay();
+        this.sendMsg();
+      }, 2000);
     },
   },
   computed: {

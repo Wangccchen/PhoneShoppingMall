@@ -37,6 +37,14 @@ export function getCartId(userId) {
     })
   }
 
+
+  export function cleanByID(cartID) {
+    return request({
+      url: '/cart/delete/'+cartID,
+      method: 'delete',
+    })
+  }
+
   export function checkout(cartId) {
     return request({
       url: '/cart/checkout/'+cartId,

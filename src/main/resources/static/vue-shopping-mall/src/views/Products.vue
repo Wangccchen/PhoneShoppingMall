@@ -319,7 +319,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .imageDetail {
   width: 50%;
 }

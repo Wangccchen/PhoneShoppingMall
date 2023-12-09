@@ -42,7 +42,6 @@ public class ProductServiceImpl implements ProductService {
 
     //根据ID获得商品
     @Override
-    @Log
     public Product getProductByID(int productID) {
         return productMapper.getProductById(productID);
     }

@@ -58,4 +58,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItemsMapper.deleteCartItem(cartID, productID);
         // 还可以添加其他逻辑，例如刷新购物车列表等
     }
+
+    @Override
+    public void deleteByCartId(int cartID) {
+        cartItemsMapper.deleteByCartId(cartID);
+    }
 }

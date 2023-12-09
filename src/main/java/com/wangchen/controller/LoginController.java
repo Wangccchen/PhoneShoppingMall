@@ -1,16 +1,15 @@
 
 package com.wangchen.controller;
 
+import com.wangchen.pojo.PageBean;
 import com.wangchen.pojo.Result;
 import com.wangchen.pojo.User;
+import com.wangchen.service.LogService;
 import com.wangchen.service.UserService;
 import com.wangchen.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +19,8 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
+
+
 
     @PostMapping({"/back/login","/login"})
     public Result login(HttpServletRequest request, @RequestBody User user) {

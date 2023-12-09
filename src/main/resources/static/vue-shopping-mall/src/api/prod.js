@@ -30,6 +30,13 @@ export function update(product) {
   })
 }
 
+export function updateNums(product) {
+  return request({
+    url: '/products',
+    method: 'put',
+    data: product
+  })
+}
 
 export function deleteById(id) {
   return request({
@@ -63,6 +70,13 @@ export function getById(cartID,productID) {
 export function getDetailById(id) {
   return request({
     url: '/mall/products/'+id,
+    method: 'get',
+  })
+}
+
+export function getProductByIDForUpdate(id) {
+  return request({
+    url: '/products/'+id,
     method: 'get',
   })
 }

@@ -1,5 +1,6 @@
 package com.wangchen.controller;
 
+import com.wangchen.annotations.Log;
 import com.wangchen.pojo.PageBean;
 import com.wangchen.pojo.Product;
 import com.wangchen.pojo.Result;
@@ -25,12 +26,18 @@ public class ProductController {
     }
 
     @GetMapping({"/mall/products/{productID}","/backsystem/products/{productID}"})
+    @Log
     public Result getProductByID(@PathVariable("productID") int productID){
         System.out.println(productID);
         Product product = productService.getProductByID(productID);
         return Result.success(product);
     }
-
+    @GetMapping("/products/{productID}")
+    public Result getProductByIDForUpdate(@PathVariable("productID") int productID){
+        System.out.println(productID);
+        Product product = productService.getProductByID(productID);
+        return Result.success(product);
+    }
     //商品页获取所有商品的信息
     @GetMapping({"/products/allProducts","/backsystem/products/allProducts"})
     public Result getAllProducts() {
