@@ -13,8 +13,9 @@ public class UploadUtils {
         ApplicationHome applicationHome = new ApplicationHome(this.getClass());
 
         // 保存目录位置根据项目需求可随意更改
-        return applicationHome.getDir().getParentFile()
-                .getParentFile().getAbsolutePath() + "\\src\\main\\resources\\static\\vue-shopping-mall\\public\\imgs\\productPics";
+//        return applicationHome.getDir().getParentFile()
+//                .getParentFile().getAbsolutePath() + "\\src\\main\\resources\\static\\vue-shopping-mall\\public\\imgs\\productPics";
+        return "/usr/local/nginx/html/dist/imgs/productPics";
     }
 
     public String saveFile(MultipartFile file) {
