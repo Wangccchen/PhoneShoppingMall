@@ -10,7 +10,11 @@
 //    @Override
 //    public void addCorsMappings(CorsRegistry registry) {
 //        registry.addMapping("/**")
-//                .allowedOriginPatterns("http://localhost:39")
+////                .allowedOrigins("*")
+//                .allowedOrigins("http://localhost:8080/")
+////                .allowedOrigins("http://8.134.204.233")
+//                .allowedOriginPatterns("*")
+////                .allowedOriginPatterns("http://localhost:39")
 //                .allowedMethods("GET", "POST", "PUT", "DELETE")
 //                .allowedHeaders("*")
 //                .allowCredentials(true)

@@ -80,3 +80,10 @@ export function getInfoByName(name) {
     }
   })
 }
+
+export function getNums() {
+  return request({
+    url: '/backsystem/users/getTotal',
+    method: 'get',
+  })
+}

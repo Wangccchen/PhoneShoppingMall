@@ -14,7 +14,7 @@
       </el-header>
       <el-container>
         <el-aside width="200px">
-          <el-menu :default-openeds="['1', '4']">
+          <el-menu :default-openeds="['1', '5']">
             <el-submenu index="1">
               <template slot="title"
                 ><i class="el-icon-message"></i>基本操作</template
@@ -28,6 +28,9 @@
               </el-menu-item>
               <el-menu-item index="1-3">
                 <router-link to="/backsystem/logs"> 操作日志 </router-link>
+              </el-menu-item>
+              <el-menu-item index="1-4">
+                <router-link to="/backsystem/reports"> 销售图表 </router-link>
               </el-menu-item>
             </el-submenu>
           </el-menu>

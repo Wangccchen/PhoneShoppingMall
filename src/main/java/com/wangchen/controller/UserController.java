@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 public class UserController {
     @Autowired
@@ -82,6 +83,18 @@ public class UserController {
     public Result updateUser(@RequestBody User user) {
         userService.updateUser(user);
         return Result.success("User updated successfully");
+    }
+
+    @GetMapping("/backsystem/users/getTotal")
+    public Result getTotalUsersCount(){
+        try {
+            int total = userService.getTotalUsersCount();
+            return Result.success(total);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取用户数量失败：" + e.getMessage());
+        }
+
     }
 }
 

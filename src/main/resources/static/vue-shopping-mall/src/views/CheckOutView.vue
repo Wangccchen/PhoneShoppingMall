@@ -321,10 +321,14 @@ export default {
 };
 </script>
 
-<style>
+<style >
 .header {
   justify-content: left !important;
   color: #fff !important;
+  background-color: #409eff;
+}
+.el-page-header {
+  margin-top: 15px;
 }
 .el-page-header__content {
   color: #fff;

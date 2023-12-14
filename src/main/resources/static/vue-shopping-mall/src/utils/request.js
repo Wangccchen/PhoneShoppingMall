@@ -2,8 +2,13 @@ import axios from "axios";
 import Router from '@/router'
 import { getToken,removeToken } from "./token";
 
+// axios.defaults.baseURL = process.env.VUE_APP_BASEURL;
+
 const service = axios.create({
-    baseURL: '/api' ,// url = base url + request url
+    baseURL:process.env.VUE_APP_BASEURL,
+    // baseURL:"http://8.134.204.233:8080",
+    // baseURL: process.env.VUE_APP_BASE_API ,
+    // baseURL:'/api',
     withCredentials: true,
     timeout: 500000 
   })

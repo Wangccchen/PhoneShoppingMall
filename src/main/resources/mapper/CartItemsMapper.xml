@@ -4,42 +4,43 @@
 
     <!-- 添加商品到购物车 -->
     <insert id="addProductToCart" parameterType="com.wangchen.pojo.CartItem">
-        INSERT INTO CartItems (CartID, ProductID, Quantity)
+        INSERT INTO shoppingdb.cartitems (CartID, ProductID, Quantity)
         VALUES (#{cartID}, #{productID}, #{quantity})
         ON DUPLICATE KEY UPDATE Quantity = Quantity + #{quantity};
     </insert>
 
     <!-- 根据 UserID 获取对应的 CartID -->
     <select id="getCartIDByUserID" resultType="int" parameterType="int">
-        SELECT CartID FROM ShoppingCart WHERE UserID = #{userID}
+        SELECT CartID FROM shoppingdb.shoppingcart WHERE UserID = #{userID}
     </select>
 
     <!-- 根据 CartID 查询对应的 ProductID -->
     <select id="getProductIdsByCartId" resultType="Integer" parameterType="Integer">
-        SELECT ProductID FROM CartItems WHERE CartID = #{cartId}
+        SELECT ProductID FROM shoppingdb.cartitems WHERE CartID = #{cartId}
     </select>
 
     <!-- 根据 CartID 和 ProductID 查询对应的 Quantity -->
     <select id="getQuantityByCartIdAndProductId" resultType="Integer" parameterType="Map">
-        SELECT Quantity FROM CartItems
+        SELECT Quantity FROM shoppingdb.cartitems
         WHERE CartID = #{cartID} AND ProductID = #{productID}
     </select>
 
     <!-- 根据 cartID、productID 和传入的 quantity 修改 quantity 列 -->
     <update id="updateCartItemQuantity" parameterType="com.wangchen.pojo.CartItem">
-        UPDATE CartItems
+        UPDATE shoppingdb.cartitems
         SET Quantity = #{quantity}
         WHERE CartID = #{cartID} AND ProductID = #{productID}
     </update>
 
     <!-- 删除购物车项 -->
     <delete id="deleteCartItem" parameterType="map">
-        DELETE FROM CartItems
+        DELETE FROM shoppingdb.cartitems
         WHERE CartID = #{cartID} AND ProductID = #{productID}
     </delete>
 
     <!-- 根据 cartID 删除对应行 -->
     <delete id="deleteByCartId" parameterType="int">
-        DELETE FROM CartItems WHERE CartID = #{cartID}
+        DELETE FROM shoppingdb.cartitems WHERE CartID = #{cartID}
     </delete>
 </mapper>
+

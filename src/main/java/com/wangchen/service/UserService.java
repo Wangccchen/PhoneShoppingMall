@@ -27,5 +27,7 @@ public interface UserService {
 
     //后台验证登录
     User login(String username, String password);
+
+    int getTotalUsersCount();
 }
 

@@ -29,9 +29,15 @@
         <el-form-item>
           <el-button
             type="primary"
-            style="width: 100%"
+            style="width: 49%"
             @click.native.prevent="doSubmit"
             >登录</el-button
+          >
+          <el-button
+            type="message"
+            style="width: 45%"
+            @click.native.prevent="goBack"
+            >返回</el-button
           >
         </el-form-item>
         <!-- <el-row style="text-align: center; margin-top: -10px">
@@ -89,6 +95,9 @@ export default {
           this.$message.error(res.data.msg);
         }
       });
+    },
+    goBack() {
+      this.$router.push("/mall");
     },
     //展示密码
     showPwd() {

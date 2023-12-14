@@ -2,30 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wangchen.mapper.UserMapper">
 
-    <!-- 添加用户 -->
-<!--    <insert id="addUser" parameterType="com.wangchen.pojo.User">-->
-<!--        INSERT INTO Users (Username, Password, Email, Address, PhoneNumber)-->
-<!--        VALUES (#{username}, #{password}, #{email}, #{address}, #{phoneNumber})-->
-<!--    </insert>-->
     <insert id="addUser" parameterType="com.wangchen.pojo.User">
         <!-- 插入用户 -->
-        INSERT INTO Users (Username, Password, Email, Address, PhoneNumber)
+        INSERT INTO shoppingdb.users (Username, Password, Email, Address, PhoneNumber)
         VALUES (#{username}, #{password}, #{email}, #{address}, #{phoneNumber});
 
         <!-- 插入购物车记录，关联到新用户 -->
-        INSERT INTO ShoppingCart (UserID)
+        INSERT INTO shoppingdb.shoppingcart (UserID)
         VALUES (LAST_INSERT_ID());
     </insert>
 
-
     <!-- 删除用户 -->
     <delete id="deleteUser" parameterType="int">
-        DELETE FROM Users WHERE UserID = #{userID}
+        DELETE FROM shoppingdb.users WHERE UserID = #{userID}
     </delete>
 
     <!-- 批量删除用户 -->
     <delete id="deleteUsersByIds" parameterType="java.util.List">
-        DELETE FROM Users WHERE UserID IN
+        DELETE FROM shoppingdb.users WHERE UserID IN
         <foreach item="userId" collection="list" open="(" separator="," close=")">
             #{userId}
         </foreach>
@@ -33,42 +27,43 @@
 
     <!-- 更新用户信息 -->
     <update id="updateUser" parameterType="com.wangchen.pojo.User">
-        UPDATE Users SET Username = #{username}, Password = #{password}, Email = #{email}, Address = #{address}, PhoneNumber = #{phoneNumber},Flag = #{flag}
+        UPDATE shoppingdb.users SET Username = #{username}, Password = #{password}, Email = #{email}, Address = #{address}, PhoneNumber = #{phoneNumber},Flag = #{flag}
         WHERE UserID = #{userID}
     </update>
 
     <!-- 根据ID获取用户 -->
     <select id="getUserById" resultType="com.wangchen.pojo.User">
-        SELECT * FROM Users WHERE UserID = #{userID}
+        SELECT * FROM shoppingdb.users WHERE UserID = #{userID}
     </select>
 
     <!-- 获取所有用户 -->
     <select id="getAllUsers" resultType="com.wangchen.pojo.User">
-        SELECT * FROM Users
+        SELECT * FROM shoppingdb.users
     </select>
 
     <!-- 分页查询用户 -->
     <select id="getUsersByPage" resultType="com.wangchen.pojo.User">
-        SELECT * FROM Users LIMIT #{start}, #{pageSize}
+        SELECT * FROM shoppingdb.users LIMIT #{start}, #{pageSize}
     </select>
 
     <!-- 获取用户总数 -->
     <select id="getTotalUsersCount" resultType="int">
-        SELECT COUNT(*) FROM Users
+        SELECT COUNT(*) FROM shoppingdb.users
     </select>
 
     <!-- 根据关键字搜索用户（模糊搜索） -->
     <select id="searchUsersByUsername" resultType="com.wangchen.pojo.User">
-        SELECT * FROM Users WHERE Username LIKE CONCAT('%', #{keyword}, '%')
+        SELECT * FROM shoppingdb.users WHERE Username LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
     <!-- 根据用户名获取用户 -->
     <select id="getUserByUsername" resultType="com.wangchen.pojo.User">
-        SELECT * FROM Users WHERE Username = #{username}
+        SELECT * FROM shoppingdb.users WHERE Username = #{username}
     </select>
 
-    <!--    后台验证登录-->
+    <!-- 后台验证登录 -->
     <select id="getUserByUsernameAndPassword" resultType="com.wangchen.pojo.User">
-        SELECT * FROM Users WHERE Username = #{username} AND Password = #{password}
+        SELECT * FROM shoppingdb.users WHERE Username = #{username} AND Password = #{password}
     </select>
 </mapper>
+

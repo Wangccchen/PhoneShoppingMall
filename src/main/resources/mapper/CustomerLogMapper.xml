@@ -3,16 +3,16 @@
 <mapper namespace="com.wangchen.mapper.CustomerLogMapper">
 
     <insert id="insertCustomerLog" parameterType="com.wangchen.pojo.CustomerLog">
-        INSERT INTO CustomerLogs (UserID, OperationType, operTime)
+        INSERT INTO shoppingdb.customerlogs (UserID, OperationType, operTime)
         VALUES (#{userID}, #{operationType}, #{operTime})
     </insert>
 
-
     <select id="getLogsByPage" resultType="com.wangchen.pojo.CustomerLog">
-        SELECT * FROM CustomerLogs LIMIT #{start}, #{pageSize}
+        SELECT * FROM shoppingdb.customerlogs LIMIT #{start}, #{pageSize}
     </select>
 
     <select id="getTotalLogsCount" resultType="int">
-        SELECT COUNT(*) FROM CustomerLogs
+        SELECT COUNT(*) FROM shoppingdb.customerlogs
     </select>
 </mapper>
+

@@ -29,6 +29,7 @@ const routes = [
   },
   {
     path: '/backsystem',
+    redirect:'/backsystem/reports',
     component: () => import('../views/BackHomePage.vue'),
     children: [
       {
@@ -42,7 +43,10 @@ const routes = [
       {
         path: '/backsystem/logs',
         component: () => import('../views/LogView.vue')
-      },
+      },{
+        path: '/backsystem/reports',
+        component: () => import('../views/BackReportView.vue')
+      }
     ]
   },
   {

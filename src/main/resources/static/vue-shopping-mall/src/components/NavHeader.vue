@@ -3,8 +3,8 @@
     <div class="nav-topbar">
       <div class="container">
         <div class="top-menu">
-          <a href="javascript:;">顶尖智能手机商城</a>
-          <a href="javascript:;">WC-PhoneMall</a>
+          <a href="javascript:;">wc数码产品商城</a>
+          <a href="javascript:;">WC-EMall</a>
           <a href="javascript:;">其他服务</a>
           <a href="javascript:;">协议规则</a>
         </div>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 public class ProductController {
     @Autowired
@@ -48,6 +49,7 @@ public class ProductController {
     @PostMapping({"/products","/backsystem/products"})
     public Result addProduct(@RequestBody Product product) {
         productService.addProduct(product);
+//        System.out.println(product.getImageURL());
         return Result.success("Product added successfully");
     }
 

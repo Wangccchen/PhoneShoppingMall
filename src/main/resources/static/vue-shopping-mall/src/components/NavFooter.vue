@@ -4,11 +4,13 @@
       <p>数码商城</p>
     </div>
     <div class="foot-link">
-      <a href="https://github.com/Wangccchen" target="_blank">github主页</a>
-      <a href="https://github.com/Wangccchen" target="_blank"
+      <a href="https://github.com/Wangccchen/PhoneShoppingMall" target="_blank"
+        >github主页</a
+      >
+      <a href="https://github.com/Wangccchen/PhoneShoppingMall" target="_blank"
         >计科一班 王琛 开发</a
       >
-      <a href="https://github.com/Wangccchen" target="_blank"
+      <a href="https://github.com/Wangccchen/PhoneShoppingMall" target="_blank"
         >网络应用开发大作业</a
       >
     </div>

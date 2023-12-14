@@ -66,6 +66,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int getTotalUsersCount() {
+        return userMapper.getTotalUsersCount();
+    }
+
+    @Override
     public PageBean getUsersByPage(int currentPage, int pageSize) {
         List<User> users = userMapper.getUsersByPage((currentPage - 1) * pageSize, pageSize);
         int totalItems = userMapper.getTotalUsersCount();  // 获取总用户数量
