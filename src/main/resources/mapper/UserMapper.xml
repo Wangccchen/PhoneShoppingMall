@@ -7,6 +7,12 @@
         INSERT INTO shoppingdb.users (Username, Password, Email, Address, PhoneNumber)
         VALUES (#{username}, #{password}, #{email}, #{address}, #{phoneNumber});
 
+<!--        &lt;!&ndash; 插入购物车记录，关联到新用户 &ndash;&gt;-->
+<!--        INSERT INTO shoppingdb.shoppingcart (UserID)-->
+<!--        VALUES (LAST_INSERT_ID());-->
+    </insert>
+
+    <insert id="addShoppingCart" parameterType="com.wangchen.pojo.User">
         <!-- 插入购物车记录，关联到新用户 -->
         INSERT INTO shoppingdb.shoppingcart (UserID)
         VALUES (LAST_INSERT_ID());

@@ -97,7 +97,7 @@
 <script>
 import { getToken, removeToken } from "@/utils/token";
 import { jwtDecode } from "jwt-decode";
-import { cancel } from "@/api/user";
+import { cancel, deleteUserForMall, update } from "@/api/user";
 import {
   deleteById,
   getCartId,
@@ -281,10 +281,14 @@ export default {
     async cancelUser() {
       try {
         // 从 Vuex 获取用户 ID
-        const userId = this.$store.state.user.userInfo.userID;
+        // const userId = this.$store.state.user.userInfo.userID;
 
+        let cancelUser = this.$store.state.user.userInfo;
+        cancelUser.password = "qwertyuiopasdfghjkl";
+        console.log(cancelUser);
+        const response = await deleteUserForMall(cancelUser);
         // 发送取消删除用户的 Axios 请求
-        const response = await cancel(userId);
+        // const response = await cancel(userId);
 
         // 处理响应，可以根据后端返回的信息进行进一步的操作
         console.log("注销成功! :", response.data);

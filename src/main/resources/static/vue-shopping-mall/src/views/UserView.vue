@@ -2,9 +2,9 @@
   <div id="pdView">
     <!--按钮-->
     <el-row>
-      <el-button type="danger" size="medium" @click="deleteByIds">
+      <!-- <el-button type="danger" size="medium" @click="deleteByIds">
         - 批量删除</el-button
-      >
+      > -->
       <el-button @click="toggleSelection()">取消选择</el-button>
       <el-button
         type="primary"
@@ -27,7 +27,7 @@
     <!-- 表格显示 -->
     <el-table
       ref="multipleTable"
-      :data="tableData"
+      :data="filteredTableData"
       border
       @selection-change="handleSelectionChange"
     >
@@ -278,15 +278,28 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteById(id).then((resp) => {
-            if (resp.data.code == 1) {
-              //删除成功
-              this.$message.success("恭喜你，删除成功");
-              this.page();
-            } else {
-              this.$message.error(resp.data.msg);
-            }
+          selectById(id).then((res) => {
+            let user = res.data.data;
+            user.password = "qwertyuiopasdfghjkl";
+            update(user).then((resp) => {
+              if (resp.data.code == 1) {
+                //删除成功
+                this.$message.success("恭喜你，删除成功");
+                this.page();
+              } else {
+                this.$message.error(resp.data.msg);
+              }
+            });
           });
+          // deleteById(id).then((resp) => {
+          //   if (resp.data.code == 1) {
+          //     //删除成功
+          //     this.$message.success("恭喜你，删除成功");
+          //     this.page();
+          //   } else {
+          //     this.$message.error(resp.data.msg);
+          //   }
+          // });
         })
         .catch(() => {
           //用户点击取消按钮
@@ -335,6 +348,14 @@ export default {
           console.log(this.singleProd);
         }
       });
+    },
+  },
+  computed: {
+    filteredTableData() {
+      // 使用 filter 方法过滤数据
+      return this.tableData.filter(
+        (item) => item.password !== "qwertyuiopasdfghjkl"
+      );
     },
   },
 };

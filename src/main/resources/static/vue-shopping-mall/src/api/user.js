@@ -31,6 +31,15 @@ export function update(user) {
   })
 }
 
+
+export function deleteUserForMall(user) {
+  return request({
+    url: '/users',
+    method: 'put',
+    data: user
+  })
+}
+
 export function updateInfo(user) {
   return request({
     url: '/users',

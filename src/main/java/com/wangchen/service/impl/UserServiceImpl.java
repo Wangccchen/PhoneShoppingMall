@@ -30,7 +30,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(User user) {
         userMapper.addUser(user);
+        userMapper.addShoppingCart(user);
     }
+
 
     @Override
     public void deleteUser(int userID) {

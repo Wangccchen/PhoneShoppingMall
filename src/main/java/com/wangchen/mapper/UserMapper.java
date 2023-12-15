@@ -12,6 +12,9 @@ public interface UserMapper {
     // 增加用户
     void addUser(User user);
 
+    //增加购物车
+    void addShoppingCart(User user);
+
     // 删除用户
     void deleteUser(int userID);
 
