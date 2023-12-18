@@ -1,5 +1,5 @@
 // store/modules/user.js
-import { getInfoByName,updateInfo } from '../../api/user';
+import { getInfoByName,getUserByID,updateInfo } from '../../api/user';
 const state = {
     userInfo: null
   };
@@ -28,9 +28,11 @@ const state = {
   };
   
   const actions = {
-    async fetchUserInfo({ commit }, username) {
+    async fetchUserInfo({ commit }, userID) {
+      // console.log(userID);
       try {
-        const res = await getInfoByName(username);
+        // const res = await getInfoByName(username);
+        const res = await getUserByID(userID);
         if (res.data.code === 1) {
           const userInfo = res.data.data;
           commit("setUserInfo", userInfo);
@@ -40,6 +42,7 @@ const state = {
         }
       } catch (error) {
         // 处理请求失败情况
+        // console.log(userID);
         console.error("Error fetching user information:", error);
       }
     },

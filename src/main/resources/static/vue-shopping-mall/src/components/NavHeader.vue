@@ -126,7 +126,7 @@ export default {
         // 解析 token 为 JSON 对象
         const decodedToken = jwtDecode(storedToken);
         //再通过token中的对象名来获取具体的user信息并存储到 Vuex 中
-        this.$store.dispatch("user/fetchUserInfo", decodedToken.username);
+        this.$store.dispatch("user/fetchUserInfo", decodedToken.userid);
         // 从解析后的 JSON 对象中获取用户名或其他信息
         this.username = decodedToken.username;
       }

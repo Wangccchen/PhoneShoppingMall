@@ -51,9 +51,10 @@
 </template>
    
   <script>
-import { setToken } from "@/utils/token";
+import { setToken, getToken } from "@/utils/token";
 import axios from "axios";
 import { login } from "@/api/login";
+import { jwtDecode } from "jwt-decode";
 export default {
   name: "login",
   components: { axios },
@@ -91,12 +92,13 @@ export default {
           // 登录成功，保存 token
           setToken(loginRes.data.data);
           this.$message.success("登录成功！正在跳转......");
-
+          const storedToken = getToken();
+          // 解析 token 为 JSON 对象
+          const decodedToken = jwtDecode(storedToken);
+          // 从解析后的 JSON 对象中获取用户名或其他信息
+          const userID = decodedToken.userid;
           // 获取用户信息并保存到 Vuex 中
-          await this.$store.dispatch(
-            "user/fetchUserInfo",
-            this.loginForm.username
-          );
+          await this.$store.dispatch("user/fetchUserInfo", userID);
           this.$router.push("/mall");
         } else {
           this.$message.error(loginRes.data.msg);

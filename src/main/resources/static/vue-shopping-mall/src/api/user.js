@@ -80,6 +80,16 @@ export function selectById(id) {
   })
 }
 
+export function getUserByID(id) {
+  return request({
+    url: '/users/'+id,
+    method: 'get',
+    // params:{
+    //   id:id
+    // }
+  })
+}
+
 export function getInfoByName(name) {
   return request({
     url: '/users/getByUsername',
